@@ -1,5 +1,5 @@
 <?php
-namespace app\index\controller;
+namespace app\admin\controller;
 use think\Controller;
 class Index extends Controller
 {
@@ -7,5 +7,4 @@ class Index extends Controller
     {
         return $this->fetch('index');
     }
-
 }
