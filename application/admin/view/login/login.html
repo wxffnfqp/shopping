@@ -96,6 +96,7 @@
 				dataType:'json',
 				success:function(res){
 					if (res.code==1){
+						console.log(res.session)
 						$('#span_code').html('验证码错误')
 						$('#code_photo').attr('src','{:captcha_src()}?'+Math.random())
 					}else{

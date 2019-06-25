@@ -1,10 +1,18 @@
 <?php
 namespace app\admin\controller;
-use think\Controller;
-class Index extends Controller
+use think\facade\Session;
+use gmars\rbac\Rbac;
+class Index extends Common
 {
     public function index()
     {
+        $a=Session::get('admin');
+        $this->assign('a',$a);
         return $this->fetch('index');
     }
+    public function onControl()
+    {
+        return $this->fetch('onControl');
+    }
+
 }
