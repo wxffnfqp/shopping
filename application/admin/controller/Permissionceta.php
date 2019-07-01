@@ -14,7 +14,7 @@ class Permissionceta extends Common
         $sql="select * from permission_category";
         $arr=Db::query($sql);
         $this->assign('arr',$arr);
-        return $this->fetch('Permissionceta');
+        return $this->fetch('permissionceta');
     }
     //添加权限分组
     function permissioncetaAction()
