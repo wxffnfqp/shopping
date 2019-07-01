@@ -1,0 +1,372 @@
+<!--/meta 作为公共模版分离出去-->
+{include file="_meta" /}
+<!--/meta 作为公共模版分离出去-->
+<title>H-ui.admin v3.0</title>
+<meta name="keywords" content="H-ui.admin v3.0,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
+<meta name="description" content="H-ui.admin v3.0，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file="_header" /}
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+{include file="_menu" /}
+<!--/_menu 作为公共模版分离出去-->
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 权限分组管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="text-c">
+                <form class="Huiform" method="post" action="" target="_self">
+                    <input type="text" class="input-text" style="width:250px" placeholder="权限名称" id="" name="">
+                    <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜权限分组</button>
+                </form>
+            </div>
+            <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel(this)" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_permission_add()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加权限分组</a></span> <span class="r">共有数据：<strong>{$count}</strong> 条</span> </div>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="7">权限节点</th>
+                </tr>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" value=""></th>
+                    <th width="40">ID</th>
+                    <th width="200">权限分组名称</th>
+                    <th>权限分组描述</th>
+                    <th>创造时间</th>
+                    <th>是否启用</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arr" id="vo"}
+                <tr class="text-c">
+                        <td><input  id="my_id"  type="checkbox" value="{$vo.id}" ></td>
+                        <td >{$vo.id}</td>
+                        <td cc="{$vo.id}"><span class="click">{$vo.name}</span></td>
+                        <td dd="{$vo.id}"><span class="up_description">{$vo.description}</span></td>
+                        <td>{$vo.create_time|date="Y-m-d H:i:s"}</td>
+                    <td class='td-status'><span class='label radius'>已停用</span></td><td class='td-manage'><a style='text-decoration:none' onClick=admin_start(this,'10001') href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> <a title='编辑' href='javascript:;' onclick=permission_update({$vo.id},'{$vo.name}','{$vo.description}') class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' onclick=permission_del(this,{$vo.id}) class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </article>
+    </div>
+</section>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content radius">
+            <div class="modal-header">
+                <h3 class="modal-title">添加权限分组</h3>
+                <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            </div>
+            <div class="modal-body">
+                <article class="cl pd-20">
+                    <form  class="form form-horizontal">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限分组名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="" id="name" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">权限分组描述：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <textarea id="description" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" ></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </article>
+            </div>
+            <div class="modal-footer">
+                <button id="add"  class="btn btn-primary">添加</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-update" class="option_show modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content radius">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑权限分组</h3>
+                <span id="span_id" hidden></span>
+                <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            </div>
+            <div class="modal-body">
+                <article class="cl pd-20">
+                    <form  class="form form-horizontal">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限分组名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="" id="update_name" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">权限分组描述：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <textarea id="update_description" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" ></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </article>
+            </div>
+            <div class="modal-footer">
+                <button id="update_action" class="btn btn-primary">修改</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+{include file="_footer" /}
+
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    //批量删除
+    function datadel(obj) {
+        //判断checdbox是否有被选中的，选中返回true,没选返回true
+        var checked_id = $('#my_id').is(':checked')
+        //如果有被选中的就提示是否要删除
+        if (checked_id == true) {
+            layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
+                var id = ''
+                //取选中的
+                var aid = $('#my_id:checked')
+                //取出来之后遍历出来，用逗号隔开，遍历出来的值赋值给id，传到后台
+                for (i = 0; i < aid.length; i++) {
+                    id = id + ',' + aid[i].value
+                }
+                $.ajax({
+                    url: "{:url('permissionceta/datadel')}",
+                    type: 'post',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res)
+                        if (res.code == 0) {
+                            //删除成功隐藏选中的的要删除的行
+                            //checked选中的,parents他的父级tr
+                            $('#my_id:checked').parents("tr").remove();
+                            layer.msg('已删除!', {icon: 1, time: 1000});
+                        }
+                    }
+                })
+                $(obj).parents("tr").remove();
+                layer.msg('已删除!', {icon: 1, time: 1000});
+            });
+        }
+    }
+    $(document).on('dblclick' , '.up_description' , function () {
+        var _this = $(this)//获取描述的span标签
+        var old_html = _this.html()//获取描述span标签里的值
+        _this.parent().html("<input type='text' style='align:left; border:none;font-size:16px;color:red;' name=" + old_html + " class='blur_description' value=" + old_html + " >")
+        $('.blur_description').focus()
+
+    })
+    $(document).on('blur' , '.blur_description' , function () {
+        var _this = $(this)
+        //返回name的值，获取原来的老值，如果不修改就还是原来的老值
+        var old_html = _this.attr('name')
+        //获取修改的值
+        var new_html = _this.val()
+        var id = _this.parent().attr('dd')
+        var name = _this.parent().prev().children().html()
+        $.post(
+            "{:url('permissionceta/permissioncetaUpdateAction')}",
+            {
+                id : id,
+                name : name,
+                description : new_html,
+            },
+            function (res) {
+                console.log(res)
+                if (res.code==0){
+                    _this.parent().html("<span class='up_description'>"+ new_html +"</span>")
+                }
+                if (res.code==9){
+                    $.Huimodalalert(res.message,1000)
+                    _this.parent().html("<span class='up_description'>"+ old_html +"</span>")
+                }
+                if (res.code==1){
+                    $.Huimodalalert(res.message,1000)
+                    _this.parent().html("<span class='up_description'>"+ old_html +"</span>")
+                }
+            },'json'
+        )
+    })
+    //ondbclick双击事件，span标签的class="click",
+    $(document).on("dblclick", ".click", function () {
+        //双击取得这个标签
+        var _this = $(this);
+        var old_val = _this.html(); // 获取要修改的值，span标签里的值
+        //span标签父亲的值，也就是td的内容换成input框，里面的值就是原来的值old_val
+        _this.parent().html("<input type='text' style='border:none;font-size: 16px;color: red;' name=" + old_val + " class='focus' value=" + old_val + " />"); // 显示文本框
+        $(".focus").focus(); // 存在瑕疵，光标无法聚焦到文本最后的位置,加了这个光标就会在input框内
+        // $(":text").select(); // 改进，弥补瑕疵，全选文字
+    });
+    //还原列表并修改数据，blur离开事件，
+    $(document).on("blur", ".focus", function () {
+        //光标离开之后获取input标签
+        var _this = $(this);
+        // 获取所需参数
+        var key = _this.parent().attr("name");
+        var old_val = _this.attr("name");
+        //获取新的值，就是input框里修改好的值，
+        var new_val = _this.val();
+        //获取input框的父级的也就是td,prev它的上一个td的html
+        var id = _this.parent().prev().html();
+        //获取input框的父级的也就是td,next它的下一个td的children儿子的html
+        var description =_this.parent().next().children().html()
+        // 修改数据
+        $.post(
+            "{:url('permissionceta/permissioncetaUpdateAction')}",
+            {
+                id: id,
+                name: new_val,
+                description:description,
+            },
+            function(res) {
+            if(res.code == 1){
+                $.Huimodalalert(res.message,1000)
+                _this.parent().html('<span class="click">' + old_val + '</span>');
+            }
+            if (res.code==9){
+                $.Huimodalalert(res.message,1000)
+                _this.parent().html('<span class="click">' + old_val + '</span>');
+            }
+            if(res.code == 0){
+                _this.parent().html('<span class="click">' + new_val + '</span>');
+            }
+        },'json')
+    })
+    //添加分组的弹框
+    function admin_permission_add(){
+        $("#modal-demo").modal("show")
+    }
+    //修改分组的弹框
+    function permission_update(id,name,description){
+        //因为是弹框，点击要取它的默认值，取出来把它赋给标签
+        $('#span_id').html(id)
+        $('#update_name').val(name)
+        $('#update_description').val(description)
+        $("#modal-update").modal("show")
+    }
+    //页面加载完在加载jq,每个页面最好都要加
+    $(document).ready(function () {
+        //修改调用控制台方法
+        $('#update_action').click(function () {
+            var name=$('#update_name').val()
+            var description=$('#update_description').val()
+            var id=$('#span_id').html()
+            $.ajax({
+                url:"{:url('permissionceta/permissioncetaUpdateAction')}",
+                data:{
+                    id:id,
+                    description:description,
+                    name:name,
+                },
+                type:'post',
+                dataType:'json',
+                success:function (res) {
+                    console.log(res)
+                    if (res.code==9){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code==1){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code==0){
+                        layer.msg('修改成功',{icon:1,time:1000});
+                        $('#mymodal').modal('hide')
+                        setTimeout(function(){window.location.reload() }, 1000);
+                    }
+                }
+            })
+        })
+        //添加分组，调用后台方法
+        $('#add').click(function () {
+            var name=$('#name').val()
+            var description=$('#description').val()
+            console.log(name)
+            $.ajax({
+                url:"{:url('permissionceta/permissioncetaAction')}",
+                data:{
+                    name:name,
+                    description:description,
+                },
+                type:'post',
+                dataType:'json',
+                success:function (res) {
+                    if (res.code=='9'){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code==1){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code==0){
+                        //调用的弹框方法、提示添加成功弹框，一秒后消失
+                        $.Huimodalalert(res.message,1000)
+                        //添加成延时一秒刷新页面
+                        setTimeout(function(){window.location.reload() }, 1000);
+                    }
+                }
+            })
+        });
+    });
+    //删除分组
+    function permission_del(obj,id){
+        layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
+            $.ajax({
+                url:"{:url('permissionceta/permissioncetaDelete')}",
+                data:{
+                    id:id
+                },
+                type:'post',
+                dataType:'json',
+                success:function (res) {
+                }
+            })
+            $(obj).parents("tr").remove();
+            layer.msg('已删除!',{icon:1,time:1000});
+        });
+    }
+    /*管理员-停用*/
+    function admin_stop(obj,id){
+        layer.confirm('确认要停用吗？',function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+
+            $(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
+            $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
+            $(obj).remove();
+            layer.msg('已停用!',{icon: 5,time:1000});
+        });
+    }
+
+    /*管理员-启用*/
+    function admin_start(obj,id){
+        layer.confirm('确认要启用吗？',function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+
+            $(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_stop(this,id)" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
+            $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+            $(obj).remove();
+            layer.msg('已启用!', {icon: 6,time:1000});
+        });
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -10,7 +10,7 @@ class Common extends Controller
         parent::__construct();
         $admin=Session::get('admin');
         if (empty(Session::get('admin'))){
-            $this->success('需要登录之后才能进入后台', 'Login/index');
+            $this->redirect('Login/index');
         }else{
             $this->assign('admin',$admin);
         }

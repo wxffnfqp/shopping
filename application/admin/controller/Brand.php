@@ -13,21 +13,22 @@ class Brand extends Common
         $action = Request::action();//获取当前模块的方法名
         $action = 'admin/brand/'.$action;
         $res=$rbac->can($action);
-        if ($res==false){
+        $param=Request::has('html_type','param');
+        if ($res == false && $param){
+            $arr=['code'=>'9','status'=>'error','message'=>'您没有访问权限'];
+            $json=json_encode($arr);
+            echo $json;
+            die;
+        }elseif($res==false){
             $this->redirect('index/onControl');
             die;
-//            $res=['code'=>'9','status'=>'error','message'=>'您没有访问权限'];
         }
-//        $json=json_encode($res);
-//        echo $json;
     }
 
-    function list(){
 
-    }
 
     function productBrand(){
-        return $this->fetch('productBrand');
+        return $this->fetch('brand/productBrand');
     }
     function productAction(){
         $name=Request::post('brand_name');
