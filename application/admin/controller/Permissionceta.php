@@ -8,7 +8,7 @@ use Db;
 class Permissionceta extends Common
 {
     //查询数据库，把数组传到前台用表格遍历出来
-    function Permissionceta(){
+    function permissionceta(){
         $count=db('permission_category')->count('id');
         $this->assign('count',$count);
         $sql="select * from permission_category";
