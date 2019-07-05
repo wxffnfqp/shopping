@@ -25,8 +25,6 @@ class Brand extends Common
         }
     }
 
-
-
     function productBrand(){
         return $this->fetch('brand/productBrand');
     }

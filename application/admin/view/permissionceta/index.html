@@ -30,6 +30,7 @@
                 <thead>
                 <tr>
                     <th scope="col" colspan="7">权限节点</th>
+                    <input type="hidden" id="__token__" value="{$Request.token}" />
                 </tr>
                 <tr class="text-c">
                     <th width="25"><input type="checkbox" value=""></th>
@@ -70,7 +71,7 @@
                         <div class="row cl">
                             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限分组名称：</label>
                             <div class="formControls col-xs-8 col-sm-9">
-                                <input type="text" class="input-text" value="" placeholder="" id="name" >
+                                <input type="text" class="input-text" value="" placeholder="请输入分组名称" id="name" >
                             </div>
                         </div>
                         <div class="row cl">
@@ -103,7 +104,7 @@
                         <div class="row cl">
                             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限分组名称：</label>
                             <div class="formControls col-xs-8 col-sm-9">
-                                <input type="text" class="input-text" value="" placeholder="" id="update_name" >
+                                <input type="text" class="input-text" value="" placeholder="请输入分组名称" id="update_name" >
                             </div>
                         </div>
                         <div class="row cl">
@@ -133,10 +134,13 @@
 <script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+    //获取token密串,后台验证，防CSRF
+
     //批量删除
     function datadel(obj) {
+        var __token__ =  $('#__token__').val()
         //判断checdbox是否有被选中的，选中返回true,没选返回true
-        var checked_id = $('#my_id').is(':checked')
+        var checked_id = $('#my_id:checked').is(':checked')
         //如果有被选中的就提示是否要删除
         if (checked_id == true) {
             layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
@@ -152,20 +156,26 @@
                     type: 'post',
                     data: {
                         id: id,
+                        __token__:__token__,
                     },
                     dataType: 'json',
                     success: function (res) {
                         console.log(res)
+                        if (res.code==9){
+                            $.Huimodalalert(res.message,1000)
+                            layer.msg('删除失败',{time: 1});
+                        }
                         if (res.code == 0) {
                             //删除成功隐藏选中的的要删除的行
                             //checked选中的,parents他的父级tr
                             $('#my_id:checked').parents("tr").remove();
                             layer.msg('已删除!', {icon: 1, time: 1000});
                         }
+                        token()
                     }
                 })
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!', {icon: 1, time: 1000});
+
+
             });
         }
     }
@@ -177,6 +187,7 @@
 
     })
     $(document).on('blur' , '.blur_description' , function () {
+        var __token__ =  $('#__token__').val()
         var _this = $(this)
         //返回name的值，获取原来的老值，如果不修改就还是原来的老值
         var old_html = _this.attr('name')
@@ -185,11 +196,12 @@
         var id = _this.parent().attr('dd')
         var name = _this.parent().prev().children().html()
         $.post(
-            "{:url('permissionceta/permissioncetaUpdateAction')}",
+            "{:url('permissionceta/update')}",
             {
                 id : id,
                 name : name,
                 description : new_html,
+                __token__:__token__,
             },
             function (res) {
                 console.log(res)
@@ -219,6 +231,7 @@
     });
     //还原列表并修改数据，blur离开事件，
     $(document).on("blur", ".focus", function () {
+        var __token__ =  $('#__token__').val()
         //光标离开之后获取input标签
         var _this = $(this);
         // 获取所需参数
@@ -232,11 +245,12 @@
         var description =_this.parent().next().children().html()
         // 修改数据
         $.post(
-            "{:url('permissionceta/permissioncetaUpdateAction')}",
+            "{:url('permissionceta/update')}",
             {
                 id: id,
                 name: new_val,
                 description:description,
+                __token__:__token__,
             },
             function(res) {
             if(res.code == 1){
@@ -251,6 +265,7 @@
                 _this.parent().html('<span class="click">' + new_val + '</span>');
             }
         },'json')
+        token()
     })
     //添加分组的弹框
     function admin_permission_add(){
@@ -268,15 +283,17 @@
     $(document).ready(function () {
         //修改调用控制台方法
         $('#update_action').click(function () {
+            var __token__ =  $('#__token__').val()
             var name=$('#update_name').val()
             var description=$('#update_description').val()
             var id=$('#span_id').html()
             $.ajax({
-                url:"{:url('permissionceta/permissioncetaUpdateAction')}",
+                url:"{:url('permissionceta/update')}",
                 data:{
                     id:id,
                     description:description,
                     name:name,
+                    __token__:__token__,
                 },
                 type:'post',
                 dataType:'json',
@@ -293,19 +310,22 @@
                         $('#mymodal').modal('hide')
                         setTimeout(function(){window.location.reload() }, 1000);
                     }
+                    token()
                 }
             })
         })
         //添加分组，调用后台方法
         $('#add').click(function () {
+            var __token__ =  $('#__token__').val()
             var name=$('#name').val()
             var description=$('#description').val()
             console.log(name)
             $.ajax({
-                url:"{:url('permissionceta/permissioncetaAction')}",
+                url:"{:url('permissionceta/add')}",
                 data:{
                     name:name,
                     description:description,
+                    __token__:__token__,
                 },
                 type:'post',
                 dataType:'json',
@@ -318,30 +338,41 @@
                     }
                     if (res.code==0){
                         //调用的弹框方法、提示添加成功弹框，一秒后消失
-                        $.Huimodalalert(res.message,1000)
+                        layer.msg('添加成功!', {icon: 1, time: 1000});
                         //添加成延时一秒刷新页面
                         setTimeout(function(){window.location.reload() }, 1000);
                     }
+                    token()
                 }
             })
         });
     });
     //删除分组
     function permission_del(obj,id){
+        var __token__ =  $('#__token__').val()
         layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
             $.ajax({
-                url:"{:url('permissionceta/permissioncetaDelete')}",
+                url:"{:url('permissionceta/delete')}",
                 data:{
-                    id:id
+                    id:id,
+                    __token__:__token__,
                 },
                 type:'post',
                 dataType:'json',
                 success:function (res) {
+                    if (res.code=='9'){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code=='0') {
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!',{icon:1,time:1000});
+                    }
                 }
             })
-            $(obj).parents("tr").remove();
-            layer.msg('已删除!',{icon:1,time:1000});
+            token()
+
         });
+
     }
     /*管理员-停用*/
     function admin_stop(obj,id){

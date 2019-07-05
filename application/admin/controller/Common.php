@@ -12,7 +12,13 @@ class Common extends Controller
         if (empty(Session::get('admin'))){
             $this->redirect('Login/index');
         }else{
+            $this->assign('token',uniqid());
             $this->assign('admin',$admin);
         }
+    }
+    function commonToken(){
+    $token = $this->request->token('__token__', 'sha1');
+    $arr = ['token' =>$token ];
+    echo json_encode($arr);
     }
 }

@@ -29,16 +29,18 @@
 			<table class="table table-border table-bordered table-bg">
 				<thead>
 				<tr>
-					<th scope="col" colspan="7">权限节点</th>
+					<th scope="col" colspan="9">权限节点</th>
+					<input type="hidden" id="__token__" value="{$Request.token}" />
 				</tr>
 				<tr class="text-c">
 					<th width="25"><input type="checkbox" name="" value=""></th>
 					<th width="40">ID</th>
-					<th width="200">权限节点名称</th>
-					<th>所属分组</th>
+					<th width="150">权限节点名称</th>
+					<th>权限路径</th>
 					<th>权限节点描述</th>
-					<th>创造时间</th>
-					<th>是否启用</th>
+					<th width="150">所属分组</th>
+					<th width="150">创造时间</th>
+					<th width="50">是否启用</th>
 					<th width="100">操作</th>
 				</tr>
 				</thead>
@@ -59,9 +61,15 @@
 				<article class="cl pd-20">
 					<form  class="form form-horizontal">
 						<div class="row cl">
-							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>管理员：</label>
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称：</label>
 							<div class="formControls col-xs-8 col-sm-9">
 								<input type="text" class="input-text" value="" placeholder="" id="name" >
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限路径：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="模块名/控制器/方法" id="path" >
 							</div>
 						</div>
 						<div class="row cl">
@@ -101,13 +109,19 @@
 				<article class="cl pd-20">
 					<form  class="form form-horizontal">
 						<div class="row cl">
-							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>管理员：</label>
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称：</label>
 							<div class="formControls col-xs-8 col-sm-9">
 								<input type="text" class="input-text" value="" placeholder="" id="update_name" >
 							</div>
 						</div>
 						<div class="row cl">
-							<label class="form-label col-xs-4 col-sm-3">角色：</label>
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限路径：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="" id="update_path" >
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">权限分组：</label>
 							<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
 								<select class="select" id="pc_name_update" name="adminRole" size="1">
 
@@ -142,16 +156,18 @@
 <script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+
 	show()
 	//添加分组的弹框
 	function admin_permission_add(){
 		$("#modal-demo").modal("show")
 	}
 	//修改分组的弹框
-	function permission_update(id,name,description,category_id){
+	function my_permission_update(id,name,description,path,category_id){
 		//因为是弹框，点击要取它的默认值，取出来把它赋给标签
 		$('#span_id').html(id)
 		$('#update_name').val(name)
+		$('#update_path').val(path)
 		$('#update_description').val(description)
 		$('.select').val(category_id)
 		$("#modal-update").modal("show")
@@ -164,150 +180,200 @@
 			success:function(res){
 				var data = res.data
 				for (var i=0; i < data.length; i++){
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' id='my_id' value='"+data[i].id+"'></td><td>"+data[i].id+"</td><td p_id='id' class='up_name'>"+data[i].name+"</td><td pc_id='"+data[i].pc_id+"'>"+data[i].pc_name+"</td><td d_id='id' class='up_description'>"+data[i].description+"</td><td>"+timestampToTime(data[i].create_time)+"</td><td class='td-status'><span class='label radius'>已停用</span></td><td class='td-manage'><a style='text-decoration:none'  onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> <a title='编辑' href='javascript:;' onclick=permission_update("+data[i].id+",'"+data[i].name+"','"+data[i].description+"',"+data[i].pc_id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' onclick=permission_del(this,"+data[i].id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					tr=tr+"<tr class='text-c'><td><input type='checkbox' id='my_id' value='"+data[i].id+"'></td><td>"+data[i].id+"</td><td p_id='id' class='up_names'><span>"+data[i].name+"</span></td><td class='up_path'><span>"+data[i].path+"</span></td><td d_id='"+data[i].id+"' class='up_description'><span>"+data[i].description+"</span></td><td pc_id='"+data[i].pc_id+"'><span>"+data[i].pc_name+"</span></td><td>"+timestampToTime(data[i].create_time)+"</td><td class='td-status'><span class='label radius'>已停用</span></td><td class='td-manage'><a style='text-decoration:none'  onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> <a title='编辑' href='javascript:;' onclick=my_permission_update("+data[i].id+",'"+data[i].name+"','"+data[i].description+"','"+data[i].path+"',"+data[i].pc_id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' onclick=permission_del(this,"+data[i].id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
 				}
 				$(".table tbody").html(tr);
 			}
 		});
 	}
-
 	//页面加载完在加载jq,每个页面最好都要加
 	$(document).ready(function () {
 		$(document).on('dblclick' , '.up_description' , function () {
 			var _this = $(this)
-			var old_description = _this.html()
-			_this.html("<input type='text' class='my_description' name='"+old_description+"' style='color: red;border: none;' value='"+old_description+"'>")
-			$('.my_description').focus()
+			var old_description = _this.children().html()//获取td里面span标签里面的值
+			_this.html("<input type='text' class='my_descriptions' description='"+old_description+"' style='color: red;border: none;' value='"+old_description+"'>")
+			$('.my_descriptions').focus()
 		})
-		// $(document).on('blur' , '.my_description' , function () {
-		// 	var _this = $(this)
-		// 	var old_description = _this.attr('name')·
-		// 	var new_description = _this.val()
-		// 	var id = _this.parent().prev().prev().prev().html()
-		// 	var name = _this.parent().prev().prev().html()
-		// 	var category_id = _this.parent().prev().attr('pc_id')
-		// 	$.post(
-		// 			"{:url('permission/permissionUpdate')}",
-		// 			{
-		// 				id : id,
-		// 				name : name,
-		// 				description : new_description,
-		// 				category_id : category_id,
-		// 			},
-		// 			function (res) {
-		// 				if (res.code==0){
-		// 					_this.parent().html(new_description)
-		// 					show()
-		// 				}else{
-		// 					$.Huimodalalert(res.message,1000)
-		// 					_this.parent().html(old_description)
-		// 				}
-		// 			},'json'
-		// 	)
-		// })
-		//dblclick双击事件，即点即改
-		$(document).on('dblclick' , '.up_name' , function () {
+		$(document).on('blur' , '.my_descriptions' , function () {
+			var __token__ =  $('#__token__').val()
+			var _this = $(this)//获取td里面Input框标签
+			var old_description = _this.attr('description')//获取name的值，name名字自己取的,可以叫abc，
+			var new_description = _this.val()//获取input标签里的值，改的是什么值就是什么
+			var id = _this.parent().attr('d_id')//获取input父级也就是td，上一个td里面的值
+			var path = _this.parent().prev().children().html()//获取input父级也就是td，上一个td里面的值
+			var name = _this.parent().prev().prev().children().html()//获取input父级也就是td，下一个的下一个td里面的值
+			var category_id = _this.parent().next().attr('pc_id') //获取input父级也就是td，下一个td里面的pc_id,里面的值是下拉框分组的id
+			console.log(_this)
+			$.post(
+                "{:url('permission/update')}",
+                {
+                    id:id,
+                    name:name,
+                    description:new_description,
+                    category_id:category_id,
+                    path:path,
+                    __token__:__token__
+                },
+                function (res) {
+                    token()
+                    if (res.code==0) {
+                        _this.parent().html("<span>"+new_description+"</span>")//如果修改成功，吧input框的替换成修改好的值，返回show方法
+                        show()
+                    }
+                    if(res.status=='error'){
+                        _this.parent().html("<span>"+old_description+"</span>")//如果条件不符合，吧input框的替换成原来的老值，弹框提示
+                        $.Huimodalalert(res.message,1000)
+                    }
+                },'json'
+			)
+		})
+		// dblclick双击事件，即点即改
+		$(document).on('dblclick' , '.up_names' , function () {
 			var _this = $(this)//获取双击取得的td标签
-			var old_name = _this.html()//获取td标签里面的值
+			var old_name = _this.children().html()//获取td里面span标签里面的值
 			//在td标签里面添加一个Input框，里面的值就是获取的值old_name,name里面的值是为了给失去焦点而又没有改的时候，或者错误的时候返回原来的值
-			_this.html("<input type='text' style='border:none;font-size: 16px; color: red;' name=' "+ old_name +" '  class='my_name' value='"+ old_name +"'>")
-			$('.my_name').focus()//修补小瑕呲，光标在input框里面
+			_this.html("<input type='text' style='border:none;font-size: 16px; color: red;' names=' "+old_name+" '  class='my_names' value='"+ old_name +"'>")
+			$('.my_names').focus()//修补小瑕呲，光标在input框里面
 		})
 		//blur失去焦点事件，鼠标可移动，失去焦点即修改
-		$(document).on('blur' , '.my_name' ,function () {
+		$(document).on('blur' , '.my_names' ,function () {
+			var __token__ =  $('#__token__').val()
 			var _this = $(this)//获取td里面Input框标签
-			var old_name = _this.attr('name')//获取name的值，name名字自己取的,可以叫abc，
+			var old_name = _this.attr('names')//获取name的值，name名字自己取的,可以叫abc，
 			var new_name = _this.val()//获取input标签里的值，改的是什么值就是什么
 			var id = _this.parent().prev().html()//获取input父级也就是td，上一个td里面的值
-			var description = _this.parent().next().next().html()//获取input父级也就是td，下一个的下一个td里面的值
-			var category_id = _this.parent().next().attr('pc_id') //获取input父级也就是td，下一个td里面的pc_id,里面的值是下拉框分组的id
+			var path = _this.parent().next().children().text()//获取input父级也就是td，上一个td里面的值
+			var description = _this.parent().next().next().children().html()//获取input父级也就是td，下一个的下一个td里面的值
+			var category_id = _this.parent().next().next().next().attr('pc_id') //获取input父级也就是td，下一个td里面的pc_id,里面的值是下拉框分组的id
 			$.post(
-				"{:url('permission/permissionUpdate')}",
+				"{:url('permission/update')}",
 				{
 					id:id,
 					name:new_name,
 					description:description,
 					category_id:category_id,
+					path:path,
+					__token__:__token__
 				},
 				function (res) {
+					token()
 					if (res.code==0) {
-						_this.parent().html(new_name)//如果修改成功，吧input框的替换成修改好的值，返回show方法
+						_this.parent().html("<span>"+new_name+"</span>")//如果修改成功，吧input框的替换成修改好的值，返回show方法
 						show()
 					}
-					if(res.code==1){
-						_this.parent().html(old_name)//如果条件不符合，吧input框的替换成原来的老值，弹框提示
-						$.Huimodalalert(res.message,1000)
-					}
-					if(res.code==9){
-						_this.parent().html(old_name)//如果条件不符合，吧input框的替换成原来的老值，弹框提示
+					if(res.status=='error'){
+						_this.parent().html("<span>"+old_name+"</span>")//如果条件不符合，吧input框的替换成原来的老值，弹框提示
 						$.Huimodalalert(res.message,1000)
 					}
 				},'json'
 			)
 		})
+		// dblclick双击事件，即点即改
+		$(document).on('dblclick' , '.up_path' , function () {
+			var _this = $(this)//获取双击取得的td标签
+			var old_path = _this.children().html()//获取td里面span标签里面的值
+			//在td标签里面添加一个Input框，里面的值就是获取的值old_name,name里面的值是为了给失去焦点而又没有改的时候，或者错误的时候返回原来的值
+			_this.html("<input type='text' style='border:none;font-size: 16px; color: red;width: 300px;height: 30px' name=' "+old_path+" '  class='my_path' value='"+old_path+"'>")
+			$('.my_path').focus()//修补小瑕呲，光标在input框里面
+		})
+		//blur失去焦点事件，鼠标可移动，失去焦点即修改
+		$(document).on('blur' , '.my_path' ,function () {
+			var __token__ =  $('#__token__').val()
+			var _this = $(this)//获取td里面Input框标签
+			var old_path = _this.attr('name')//获取name的值，name名字自己取的,可以叫abc，
+			var new_path = _this.val()//获取input标签里的值，改的是什么值就是什么
+			var id = _this.parent().prev().prev().html()//获取input父级也就是td，上一个td里面的值
+			var name = _this.parent().prev().children().html()//获取input父级也就是td，上一个td里面的值
+			var description = _this.parent().next().next().children().html()//获取input父级也就是td，下一个的下一个td里面的值
+			var category_id = _this.parent().next().next().attr('pc_id') //获取input父级也就是td，下一个td里面的pc_id,里面的值是下拉框分组的id
+			console.log(new_path)
+			$.post(
+					"{:url('permission/update')}",
+					{
+						id:id,
+						name:name,
+						description:description,
+						category_id:category_id,
+						path:new_path,
+						__token__:__token__
+					},
+					function (res) {
+						token()
+						if (res.code==0) {
+							_this.parent().html("<span>"+new_path+"</span>")//如果修改成功，吧input框的替换成修改好的值，返回show方法
+							show()
+						}
+						if(res.status=='error'){
+							_this.parent().html("<span>"+old_path+"</span>")//如果条件不符合，吧input框的替换成原来的老值，弹框提示
+							$.Huimodalalert(res.message,1000)
+						}
+					},'json'
+			)
+		})
 		//修改调用控制台方法
 		$('#update_action').click(function () {
+			var __token__ =  $('#__token__').val()
 			var name=$('#update_name').val()
 			var description=$('#update_description').val()
 			var id=$('#span_id').html()
+			var path=$('#update_path').val()
 			var category_id = $('#pc_name_update option:selected').val();
 			console.log(category_id)
 			$.ajax({
-				url:"{:url('permission/permissionUpdate')}",
+				url:"{:url('permission/update')}",
 				data:{
 					id:id,
 					description:description,
 					name:name,
 					category_id:category_id,
+					path:path,
+					__token__:__token__
 				},
 				type:'post',
 				dataType:'json',
 				success:function (res) {
-					if (res.code==9){
-						$.Huimodalalert(res.message,1000)
-					}
-					if (res.code==1){
+					token()
+					if (res.status=='error'){
 						$.Huimodalalert(res.message,1000)
 					}
 					if (res.code==0){
 						layer.msg('修改成功',{icon:1,time:1000});
 						show()
 						$("#modal-update").modal("hide")
-
 					}
 				}
 			})
 		})
 		//添加分组，调用后台方法
 		$('#add').click(function () {
+			var __token__ =  $('#__token__').val()
 			var name=$('#name').val()
 			var description=$('#description').val()
 			var pc_name=$('#pc_name').val()
+			var path = $('#path').val()
 			$.ajax({
-				url:"{:url('permission/permissionAction')}",
+				url:"{:url('permission/add')}",
 				data:{
 					pc_name:pc_name,
 					name:name,
 					description:description,
+					path:path,
+					__token__:__token__
 				},
 				type:'post',
 				dataType:'json',
 				success:function (res) {
-					if (res.code=='9'){
+					token()
+					if (res.status=='error'){
+						console.log(res.token)
 						$.Huimodalalert(res.message,1000)
-					}
-					if (res.code==1){
-						//调用的弹框方法、提示添加成功弹框，一秒后消失
-						$.Huimodalalert(res.message,1000)
-						//添加成延时一秒刷新页面
-						setTimeout(function(){window.location.reload() }, 1000);
 					}
 					if (res.code==0){
+						console.log(res.token)
 						layer.msg('添加成功!',{icon:1,time:1000});
 						$("#modal-demo").modal("hide")
 						show()
 					}
-
 				}
 			})
 		});
@@ -330,23 +396,35 @@
 	});
 	//删除分组
 	function permission_del(obj,id){
+		var __token__ =  $('#__token__').val()
 		layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
 			$.ajax({
-				url:"{:url('permission/permissionDelete')}",
+				url:"{:url('permission/delete')}",
 				data:{
-					id:id
+					id:id,
+					__token__:__token__
 				},
 				type:'post',
 				dataType:'json',
 				success:function (res) {
+					token()
+					if (res.status=='error'){
+						console.log(res.token)
+						layer.msg('!',{time:0});
+						$.Huimodalalert(res.message,1000)
+					}
+					if (res.status=='success'){
+						layer.msg('已删除!',{icon:1,time:1000});
+						$(obj).parents("tr").remove();
+						show()
+					}
 				}
 			})
-			$(obj).parents("tr").remove();
-			layer.msg('已删除!',{icon:1,time:1000});
-			show()
+
 		});
 	}
 	function datadel() {
+		var __token__ =  $('#__token__').val()
 		//获取checdbox被选中的id
 		var data_id = $('#my_id:checked')
 		//判断checdbox是否有被选中的，选中返回true,没选返回true
@@ -362,42 +440,28 @@
 				$.ajax({
 					url:"{:url('permission/datadel')}",
 					data:{
-						id:id
+						id:id,
+						__token__:__token__
 					},
 					type:'post',
 					dataType:'json',
 					success: function (res) {
+						token()
+						if (res.status=='error'){
+							console.log(res.token)
+							layer.msg('!',{time:0});
+							$.Huimodalalert(res.message,1000)
+						}
+						if (res.status=='success'){
+							layer.msg('已删除!',{icon:1,time:1000});
+							show()
+						}
 					}
 				})
-				show()
-				$('#my_id:checked').parents("tr").remove();
-				layer.msg('已删除!', {icon: 1, time: 1000});
 			});
 		}
 	}
-	/*管理员-停用*/
-	function admin_stop(obj,id){
-		layer.confirm('确认要停用吗？',function(index){
-			//此处请求后台程序，下方是成功后的前台处理……
 
-			$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
-			$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
-			$(obj).remove();
-			layer.msg('已停用!',{icon: 5,time:1000});
-		});
-	}
-
-	/*管理员-启用*/
-	function admin_start(obj,id){
-		layer.confirm('确认要启用吗？',function(index){
-			//此处请求后台程序，下方是成功后的前台处理……
-
-			$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_stop(this,id)" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
-			$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
-			$(obj).remove();
-			layer.msg('已启用!', {icon: 6,time:1000});
-		});
-	}
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
 </body>

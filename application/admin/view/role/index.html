@@ -1,0 +1,387 @@
+﻿<!--/meta 作为公共模版分离出去-->
+{include file="_meta" /}
+<!--/meta 作为公共模版分离出去-->
+<title>H-ui.admin v3.0</title>
+<meta name="keywords" content="H-ui.admin v3.0,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
+<meta name="description" content="H-ui.admin v3.0，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file="_header" /}
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+{include file="_menu" /}
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 角色管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" href="javascript:;" onclick="admin_role_add('添加角色','roleadd','800')"><i class="Hui-iconfont">&#xe600;</i> 添加角色</a> </span> <span class="r ">共有数据：<strong class="my_count">54</strong> 条</span> </div>
+			<div class="mt-10">
+			<table class="table table-border table-bordered table-hover table-bg">
+				<thead>
+					<tr>
+						<th scope="col" colspan="6">角色管理</th>
+						<input type="hidden" id="__token__" value="{$Request.token}" />
+					</tr>
+					<tr class="text-c">
+						<th width="25"><input type="checkbox" value="" name=""></th>
+						<th width="40">ID</th>
+						<th width="200">角色名</th>
+						<th width="300">描述</th>
+						<th width="100">是否启用</th>
+						<th width="70">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius" style="width: 900px;">
+			<div class="modal-header">
+				<h3 class="modal-title">添加角色</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<article class="cl pd-20">
+					<form class="form form-horizontal" id="form-admin-role-add">
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="" id="name" datatype="*4-16" nullmsg="用户账户不能为空">
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">备注：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="" id="description">
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">角色描述：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<dl class="permission-list" id="add_permission">
+
+								</dl>
+							</div>
+						</div>
+					</form>
+				</article>
+			</div>
+			<div class="modal-footer">
+				<button id="add"  class="btn btn-primary" >添加</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-update" class="option_show modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius" style="width: 900px;">
+			<div class="modal-header">
+				<h3 class="modal-title">权限详情和修改</h3>
+				<span id="span_id" hidden></span>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<article class="cl pd-20">
+					<form  class="form form-horizontal">
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="" id="update_name" >
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">权限描述：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<textarea id="update_description" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" ></textarea>
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">权限修改：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<dl class="permission-list" id="update_permission">
+
+								</dl>
+							</div>
+						</div>
+					</form>
+				</article>
+			</div>
+			<div class="modal-footer">
+				<button id="update_action" class="btn btn-primary">修改</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+{include file="_footer" /}
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+	function show() {
+		$.ajax({
+			url:"{:url('role/show')}",
+			dataType:'json',
+			success:function (res) {
+				var tr=''
+				var data=res.data
+				$('.my_count').html(res.count)
+				$.each(data,function (k,v) {
+					tr += "<tr class='text-c'>";
+					tr += "<td><input type='checkbox' id='role_dels' class='permission_id' value='"+v.id+"' ></td>";
+					tr += "<td>"+v.id+"</td>";
+					tr += "<td id='click_upname'><span>"+v.name+"</span></td>";
+					tr += "<td id='click_updescription'><span>"+v.description+"</span></td>";
+					tr += "<td class='td-status'><span class='label radius'>已停用</span></td>"
+					tr += "<td class='td-manage'><a style='text-decoration:none'  onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a>　";
+					tr += "<a title='编辑' href='javascript:;' onclick=role_update("+v.id+",'"+v.name+"','"+v.description+"') style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>"
+					tr += "<a title='删除' href='javascript:;' onclick=role_del(this,"+v.id+")  class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td>"
+					tr += "</tr>";
+				});
+				$('.table tbody').html(tr)
+			}
+		})
+	}
+	$(document).on('dblclick','#click_upname',function () {
+		var _this = $(this)
+		var old_name = _this.children().html()
+		_this.html("<input type='text' class='blur_name' style='border: none;width: 200px;height: 30px' name='"+old_name+"' value='"+old_name+"'>")
+		$('.blur_name').val("").focus().val(old_name);
+	})
+	$(document).on('blur','.blur_name',function () {
+		var __token__=$('#__token__').val()
+		var _this = $(this)
+		var old_name = _this.attr('name')
+		var new_name = _this.val()
+		var id = _this.parent().prev().html()
+		var description = _this.parent().next().children().html()
+		var permission_id = []
+		permission_id = {'id':id,'name':new_name,'description':description,'__token__':__token__}
+		traditional:true,//ajax传数组到后台需要用到
+		$.post("{:url('role/update')}",{permission_id:permission_id},function (res) {
+			console.log(res)
+			token()
+			if (res.status=='error'){
+				$.Huimodalalert(res.message,1000)
+				_this.parent().html("<span>"+old_name+"</span>")
+			}
+			if (res.code==0){
+				_this.parent().html("<span>"+new_name+"</span>")
+				$("#modal-update").modal("hide")
+			}
+		},'json')
+	})
+	$(document).on('dblclick','#click_updescription',function () {
+		var _this = $(this)
+		var old_description = _this.children().html()
+		_this.html("<input type='text' class='blur_description' style='border: none;width: 300px;height: 30px' description='"+old_description+"' value='"+old_description+"'>")
+		$('.blur_description').val("").focus().val(old_description);
+	})
+	$(document).on('blur','.blur_description',function () {
+		var __token__=$('#__token__').val()
+		var _this = $(this)
+		var old_description = _this.attr('description')
+		var new_description = _this.val()
+		var id = _this.parent().prev().prev().html()
+		var name = _this.parent().prev().children().html()
+		var permission_id = []
+		//定义关联数组，因为后台调用的是一个修改方法，所以传个数组过去，到后台判断如果是数组就执行这个修改方法，
+		permission_id = {'id':id,'name':new_name,'description':description,'__token__':__token__}
+		traditional:true,//ajax传数组到后台需要用到
+		$.post("{:url('role/update')}",{permission_id:permission_id},function (res) {
+			console.log(res)
+			token()
+			if (res.status=='error'){
+				$.Huimodalalert(res.message,1000)
+				_this.parent().html("<span>"+old_name+"</span>")
+			}
+			if (res.code==0){
+				_this.parent().html("<span>"+new_name+"</span>")
+				$("#modal-update").modal("hide")
+			}
+		})
+	})
+	show()
+	function permission_show() {
+		$.ajax({
+			url:"{:url('role/permissionshow')}",
+			dataType:'json',
+			success:function (res) {
+				dl=''
+				$.each(res.data,function (k,v) {
+					dl=dl+"<dt><label class=''><input  type='checkbox' value=''>"+k+"</label></dt><dd><dl class='cl permission-list2 ' >"
+					$.each(v,function (k1,v1) {
+						dl=dl+"<label class=''><input id='permission_ids' type='checkbox' value='"+v1['id']+"'>"+v1.name+"</label>　　"
+					})
+					dl=dl+"</dd>"
+				})
+				$('#add_permission').html(dl)
+			}
+		})
+	}
+	permission_show()
+	function up_permission_show() {
+		$.ajax({
+			url:"{:url('role/permissionshow')}",
+			dataType:'json',
+			success:function (res) {
+				dl=''
+				$.each(res.data,function (k,v) {
+					dl=dl+"<dt><label class=''><input  type='checkbox' value=''>"+k+"</label></dt><dd><dl class='cl permission-list2 ' >"
+					$.each(v,function (k1,v1) {
+						dl=dl+"<label class=''><input class='my_checked' id='checkde_id"+v1['id']+"'  type='checkbox' value='"+v1['id']+"'>"+v1.name+"</label>　　"
+					})
+					dl=dl+"</dd>"
+				})
+				$('#update_permission').html(dl)
+			}
+		})
+	}
+	up_permission_show()
+/*管理员-角色-添加*/
+function admin_role_add(){
+	$("#modal-demo").modal("show")
+}
+function role_update(id,name,description){
+	//因为是弹框，点击要取它的默认值，取出来把它赋给标签
+	$('#span_id').html(id)
+	$('#update_name').val(name)
+	$('#update_description').val(description)
+	$.ajax({
+		url:"{:url('role/permissionid')}",
+		data:{
+			id:id
+		},
+		dataType:'json',
+		success:function(res) {
+		$('.my_checked').prop('checked',false)
+		var data = res.data
+			$.each(data , function (k,v) {
+				p_id = v.permission_id
+				$('#checkde_id'+p_id).prop('checked',true)
+			})
+		}
+	})
+	$("#modal-update").modal("show")
+}
+$('#update_action').click(function () {
+	var __token__=$('#__token__').val()
+	//因为是弹框，点击要取它的默认值，取出来把它赋给标签
+	var id=$('#span_id').html()
+	var name=$('#update_name').val()
+	var description=$('#update_description').val()
+	var checked_permission_id = $('.my_checked:checked')
+	var permission_id =''
+	$.each(checked_permission_id,function (k,v) {
+		permission_id +=','+ v.value
+	})
+	console.log(permission_id)
+	$.post( "{:url('role/update')}", {id:id,name:name,description:description,__token__:__token__,permission_id:permission_id},function(res) {
+		token()
+		if (res.status=='error'){
+			$.Huimodalalert(res.message,1000)
+		}
+		if (res.code==0){
+			layer.msg('修改成功',{icon:1,time:1000});
+			$("#modal-update").modal("hide")
+			show()
+		}
+	},'json')
+})
+$('#add').click(function () {
+	var name=$('#name').val()
+	var description=$('#description').val()
+	var __token__=$('#__token__').val()
+	var permission_id = ''
+	var my_permission_id = $('#permission_ids:checked')
+	for (var i=0; i < my_permission_id.length; i++){
+		permission_id = permission_id+','+my_permission_id[i].value
+	}
+	console.log(permission_id)
+		$.post(
+			"{:url('role/add')}",
+			{
+				permission_id:permission_id,
+				name:name,
+				description:description,
+				__token__:__token__
+			},
+			function (res) {
+				token()
+				if (res.status=='error'){
+					$.Huimodalalert(res.message,1000)
+				}
+				if (res.code==0){
+					layer.msg('添加成功',{icon:1,time:1000});
+					$("#modal-demo").modal("hide")
+					show()
+				}
+			},'json'
+		)
+})
+/*管理员-角色-删除*/
+function role_del(obj,id){
+	layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		var __token__=$('#__token__').val()
+		$.post("{:url('role/delete')}", {id:id,__token__:__token__}, function (res) {
+			token()
+			if (res.status=='error'){
+				$.Huimodalalert(res.message,1000)
+			}
+			if (res.code==0){
+				$(obj).parents("tr").remove();
+				layer.msg('已删除!',{icon:1,time:1000});
+			}
+		},'json')
+
+	});
+}
+//批量删除
+function datadel() {
+	var __token__=$('#__token__').val()
+	var ids=$('#role_dels:checked')
+	//判断checdbox是否有被选中的，选中返回true,没选返回true
+	var checked_id = $('#role_dels:checked').is(':checked')
+	//如果有被选中的就提示是否要删除
+	if (checked_id == true) {
+		layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
+			var id=[]
+			$.each(ids, function (k, v) {
+				//把值放到数组里面
+				id.push(v.value)
+			})
+			traditional:true,//ajax传数组到后台需要用到
+			$.post("{:url('role/delete')}", {id:id,__token__:__token__}, function (res) {
+				token()
+				if (res.status=='error'){
+					$.Huimodalalert(res.message,1000)
+				}
+				if (res.code==0){
+					$('#role_dels:checked').parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+					show()
+				}
+			},'json')
+		});
+	}
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

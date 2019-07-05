@@ -13,7 +13,7 @@ class permissionceta extends Validate
      * @var array
      */
     protected $rule = [
-        'name' => 'require|min:1|max:25',
+        'name' => 'require|min:1|max:25|token',
         'description' => 'require|max:100',
     ];
 

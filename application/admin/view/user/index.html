@@ -33,43 +33,23 @@
 			<table class="table table-border table-bordered table-bg">
 				<thead>
 					<tr>
-						<th scope="col" colspan="9">员工列表</th>
+						<th scope="col" colspan="10">员工列表</th>
+						<input type="hidden" id="__token__" value="{$Request.token}" />
 					</tr>
 					<tr class="text-c">
 						<th width="25"><input type="checkbox" name="" value=""></th>
 						<th width="40">ID</th>
 						<th width="150">用户名</th>
 						<th width="90">手机号</th>
-						<th>账号创建时间</th>
+						<th width="90">角色</th>
 						<th width="150">最后一次登录时间</th>
+						<th>账号创建时间</th>
 						<th>信息更新时间</th>
 						<th width="100">是否已启用</th>
 						<th width="100">操作</th>
 					</tr>
 				</thead>
 				<tbody>
-<!--					<tr class="text-c">-->
-<!--						<td><input type="checkbox" value="1" name=""></td>-->
-<!--						<td>1</td>-->
-<!--						<td>admin</td>-->
-<!--						<td>13000000000</td>-->
-<!--						<td>admin@mail.com</td>-->
-<!--						<td>超级管理员</td>-->
-<!--						<td>2014-6-11 11:11:42</td>-->
-<!--						<td class="td-status"><span class="label label-success radius">已启用</span></td>-->
-<!--						<td class="td-manage"><a style="text-decoration:none" onClick="admin_stop(this,'10001')" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','admin-add.html','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>-->
-<!--					</tr>-->
-<!--					<tr class="text-c">-->
-<!--						<td><input type="checkbox" value="2" name=""></td>-->
-<!--						<td>2</td>-->
-<!--						<td>zhangsan</td>-->
-<!--						<td>13000000000</td>-->
-<!--						<td>admin@mail.com</td>-->
-<!--						<td>栏目编辑</td>-->
-<!--						<td>2014-6-11 11:11:42</td>-->
-<!--						<td class="td-status"><span class="label radius">已停用</span></td>-->
-<!--						<td class="td-manage"><a style="text-decoration:none" onClick="admin_start(this,'10001')" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a> <a title="编辑" href="javascript:;" onclick="admin_edit('管理员编辑','admin-add.html','2','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>-->
-<!--					</tr>-->
 				</tbody>
 			</table>
 		</article>
@@ -113,7 +93,7 @@
 						<div class="row cl">
 							<label class="form-label col-xs-4 col-sm-3">角色：</label>
 							<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-				<select class="select" name="adminRole" size="1">
+				<select class="select" id="role_id" size="1">
 					<option value="0">超级管理员</option>
 					<option value="1">总编sfs</option>
 					<option value="2">栏目主辑</option>
@@ -170,7 +150,7 @@
 						<div class="row cl">
 							<label class="form-label col-xs-4 col-sm-3">角色：</label>
 							<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-				<select class="select" name="adminRole" size="1">
+				<select class="select" id="up_role_id" size="1">
 				</select>
 				</span> </div>
 						</div>
@@ -193,6 +173,92 @@
 <script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+	function show() {
+		$.ajax({
+			url:"{:url('user/show')}",
+			dataType:'json',
+			success:function (res) {
+				var tr=''
+				var data=res.data
+				var newDate = new Date();//时间搓转换用得上
+				$.each(data,function (k,v) {
+					tr+="<tr class='text-c'><td>";
+					tr+="<input type='checkbox' id='user_del' value='"+v.id+"'></td>";
+					tr+="<td>"+v.id+"</td>";
+					tr+="<td id='up_name'><span>"+v.user_name+"</span></td>";
+					tr+="<td id='up_phone'><span>"+v.mobile+"</td></span>";
+					tr+="<td>"+v.name+"</td>";
+					tr+="<td>"+timestampToTime(v.last_login_time)+"</td>";
+					tr+="<td>"+timestampToTime(v.create_time)+"</td>";
+					tr+="<td>"+timestampToTime(v.update_time)+"</td>";
+					tr+="<td class='td-status'><span class='label radius'>已停用</span></td>";
+					tr+="<td class='td-manage'><a style='text-decoration:none' onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> ";
+					tr+="<a title='编辑' href='javascript:;' onclick="+"user_update("+v.id+",'"+v.user_name+"',"+v.mobile+")"+" class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>";
+					tr+="<a title='删除' href='javascript:;' onclick="+"admin_del("+v.id+")"+" class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>";
+				})
+				$(".table tbody").html(tr);
+			}
+		})
+	}
+	$(document).on('dblclick','#up_name',function () {
+		var _this = $(this)
+		var old_name = _this.children().html()
+		_this.html("<input type='text' style='border:none;width: 200px;height:30px; '  class='b_name' name='"+old_name+"' value='"+old_name+"'> ")
+		$('.b_name').focus()
+	})
+	$(document).on('blur' , '.b_name' , function () {
+		var __token__=$('#__token__').val()
+		var _this = $(this)
+		var id = _this.parent().prev().html()
+		var old_name = _this.attr('name')
+		var name = _this.val()
+		var pwd=[]
+		var phone=''
+		//定义关联数组，因为后台调用的是一个修改方法，所以传个数组过去，到后台判断如果是数组就执行这个修改方法，
+		pwd = {'id':id,'name':name,__token__:__token__ }
+		traditional:true,//ajax传数组到后台需要用到
+		$.post("{:url('user/update')}",{pwd:pwd,phone:phone},function (res) {
+			token()
+            if (res.code == 0) {
+				_this.parent().html("<span>"+name+"</span>")
+                show()
+            }
+            if (res.status == 'error') {
+                $.Huimodalalert(res.message, 1000)
+				_this.parent().html("<span>"+old_name+"</span>")
+            }
+		},'json')
+	})
+	$(document).on('dblclick','#up_phone',function () {
+		var _this = $(this)
+		var old_phone = _this.children().html()
+		_this.html("<input type='text' style='border:none;width: 200px;height:30px; ' class='b_phone' phone='"+old_phone+"' maxlength='11' value='"+old_phone+"'> ")
+		$('.b_phone').focus()
+	})
+	$(document).on('blur' , '.b_phone' , function () {
+		var __token__=$('#__token__').val()
+		var _this = $(this)
+		var id = _this.parent().prev().prev().html()
+		var old_phone = _this.attr('phone')
+		var phone = _this.val()
+		var pwd=''
+		var role_id=[]
+		//定义关联数组，因为后台调用的是一个修改方法，所以传个数组过去，到后台判断如果是数组就执行这个修改方法，
+		role_id = {'id':id,'phone':phone,__token__:__token__}
+		traditional:true,//ajax传数组到后台需要用到
+				$.post("{:url('user/update')}",{pwd:pwd,role_id:role_id},function (res) {
+					token()
+					if (res.code == 0) {
+						_this.parent().html("<span>"+phone+"</span>")
+						show()
+					}
+					if (res.status == 'error') {
+						$.Huimodalalert(res.message, 1000)
+						_this.parent().html("<span>"+old_phone+"</span>")
+					}
+				},'json')
+	})
+	show()
 	function modaldemo(){
 		$("#modal-demo").modal("show")
 	}
@@ -204,111 +270,73 @@
 	}
 $(document).ready(function () {
 	$('#update_action').click(function () {
+		var __token__=$('#__token__').val()
 		var name=$('#update_name').val()
 		var pwd=$('#update_pwd').val()
 		var pwd2=$('#update_pwd2').val()
 		var phone=$('#update_phone').val()
 		var id=$('#span_id').html()
+		var role_id = $('#up_role_id option:selected').val();
 		if (pwd!=pwd2){
 			$.Huimodalalert('上下密码不一致',1000)
 			return false
 		}
 		$.ajax({
-			url:"{:url('user/userUpdate')}",
+			url:"{:url('user/update')}",
 			data:{
+				role_id:role_id,
 				id:id,
 				phone:phone,
 				name:name,
 				pwd:pwd,
+				__token__:__token__
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
-				console.log(res)
-				if (res.status=='no'){
-					$.Huimodalalert(res.message,1000)
-				}
-				if (res.code==2){
-					$.Huimodalalert(res.message,1000)
-				}
-				if (res.code==4){
+				console.log(res.code)
+				token()
+				if (res.status=='error'){
 					$.Huimodalalert(res.message,1000)
 				}
 				if (res.code==0){
 					layer.msg('修改成功',{icon:1,time:1000});
-					$('#mymodal').modal('hide')
-					// setTimeout(function(){window.location.reload() }, 2000);
+					$('#modal-update').modal('hide')
+					show()
 				}
 			}
 		})
 	})
 	$('#add').click(function () {
+		var __token__=$('#__token__').val()
 		var name=$('#name').val()
 		var pwd=$('#pwd').val()
 		var pwd2=$('#pwd2').val()
 		var phone=$('#phone').val()
+		//获取下拉框默认值
+		var role_id = $('#role_id option:selected').val();
+		console.log(role_id)
 		if (pwd!=pwd2){
 			$.Huimodalalert('上下密码不一致',1000)
 			return false
 		}
-		$.ajax({
-			url:"{:url('user/userAction')}",
-			data:{
-				phone:phone,
-				name:name,
-				pwd:pwd,
-			},
-			type:'post',
-			dataType:'json',
-			success:function (res) {
-				console.log(res)
-				if (res.status=='no'){
-					$.Huimodalalert(res.message,1000)
-				}
-				if (res.code==2){
-					$.Huimodalalert(res.message,1000)
-				}
-				if (res.code==4){
+		$.post("{:url('user/add')}",{ role_id:role_id,phone:phone,name:name,pwd:pwd,__token__:__token__},function (res) {
+				token()
+				if (res.status=='error'){
 					$.Huimodalalert(res.message,1000)
 				}
 				if (res.code==0){
 					layer.msg('添加成功',{icon:1,time:1000});
-					setTimeout(function(){window.location.reload() }, 1000);
+					$("#modal-demo").modal("hide")
+					show()
 				}
-			}
-		})
+			},'json')
 	})
-	show()
-	//将时间戳转换为日期格式拼接起来
-	function timestampToTime(timestamp) {
-		var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-		var Y = date.getFullYear() + '-';
-		var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-		var D = date.getDate() + ' ';
-		var h = date.getHours() + ':';
-		var m = date.getMinutes() + ':';
-		var s = date.getSeconds();
-		return Y+M+D+h+m+s;
-	}
-	function show() {
+	//添加用户赋予角色，角色列表下拉框，
+	add_role()
+	function add_role() {
 		$.ajax({
-			url:"{:url('user/show')}",
-			dataType:'json',
-			success:function (res) {
-				var tr=''
-				var data=res.data
-				var newDate = new Date();
-				for (var i=0; i < data.length; i++){
-				tr=tr+"<tr class='text-c'><td><input type='checkbox' value='1'></td><td>"+data[i].id+"</td><td>"+data[i].user_name+"</td><td>"+data[i].mobile+"</td><td>"+timestampToTime(data[i].create_time)+"</td><td>"+timestampToTime(data[i].last_login_time)+"</td><td>"+timestampToTime(data[i].update_time)+"</td><td class='td-status'><span class='label radius'>已停用</span></td><td class='td-manage'><a style='text-decoration:none' onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> <a title='编辑' href='javascript:;' onclick="+"user_update("+data[i].id+",'"+data[i].user_name+"',"+data[i].mobile+")"+" class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' onclick="+"admin_del(this,"+data[i].id+")"+" class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
-				}
-				$(".table tbody").html(tr);
-			}
-		})
-	}
-	option_show()
-	function option_show() {
-		$.ajax({
-			url:"{:url('user/option')}",
+			url:"{:url('role/show')}",
 			dataType:'json',
 			success:function (res) {
 				console.log(res)
@@ -317,54 +345,92 @@ $(document).ready(function () {
 				for (var i=0; i < data.length; i++){
 					option=option+"<option value='"+data[i].id+"'>"+data[i].name+"</option>"
 				}
-				$("select").html(option);
+				$("#role_id").html(option);
 			}
 		})
 	}
-	function a(update_id){
-		console.log(update_id)
+	//修改用户信息，角色列表下拉框，
+	update_role()
+	function update_role() {
+		$.ajax({
+			url:"{:url('role/show')}",
+			dataType:'json',
+			success:function (res) {
+				console.log(res)
+				var option=''
+				var data=res.data
+				for (var i=0; i < data.length; i++){
+					option=option+"<option value='"+data[i].id+"'>"+data[i].name+"</option>"
+				}
+				$("#up_role_id").html(option);
+			}
+		})
 	}
 });
-/*
-	参数解释：
-	title	标题
-	url		请求的url
-	id		需要操作的数据id
-	w		弹出层宽度（缺省调默认值）
-	h		弹出层高度（缺省调默认值）
-*/
-/*管理员-增加*/
-function admin_add(title,url,w,h){
-	layer_show(title,url,w,h);
-	console.log()
-}
 /*管理员-删除*/
-function admin_del(obj,id){
+function admin_del(id){
+	var __token__=$('#__token__').val()
 	layer.confirm('确认要删除吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
+		console.log(id)
 		$.ajax({
-			url:"{:url('user/userDelete')}",
+			url:"{:url('user/delete')}",
 			data:{
-				id:id
+				id:id,
+				__token__:__token__
 			},
 			type:'post',
 			dataType:'json',
 			success:function (res) {
+				if (res.code==0){
+					token()
+					layer.msg('已删除!',{icon:1,time:1000});
+					$("#modal-demo").modal("hide")
+					show()
+				}
+				if (res.status=='error'){
+					layer.msg('!',{time:0});
+					$.Huimodalalert(res.message,1000)
+				}
 			}
 		})
-		$(obj).parents("tr").remove();
-		layer.msg('已删除!',{icon:1,time:1000});
 	});
 }
-/*管理员-编辑*/
-function admin_edit(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
+	function datadel() {
+		var __token__ = $('#__token__').val()
+		var ids = $('#user_del:checked')
+		//判断checdbox是否有被选中的，选中返回true,没选返回true
+		var checked_id = $('#user_del:checked').is(':checked')
+		//如果有被选中的就提示是否要删除
+		if (checked_id == true) {
+			var id=[]
+			$.each(ids, function (k, v) {
+				//把值放到数组里面
+				id.push(v.value)
+			})
+			traditional:true,//ajax传数组到后台需要用到
+			layer.confirm('确认要删除吗？', function (index) {
+				//此处请求后台程序，下方是成功后的前台处理……
+				console.log(id)
+				$.post("{:url('user/delete')}", {id: id, __token__: __token__}, function (res) {
+					token()
+					if (res.code == 0) {
+						layer.msg('已删除!', {icon: 1, time: 1000});
+						$("#modal-demo").modal("hide")
+						show()
+					}
+					if (res.status == 'error') {
+						layer.msg();
+						$.Huimodalalert(res.message, 1000)
+					}
+				}, 'json')
+			})
+		}
+	}
 /*管理员-停用*/
 function admin_stop(obj,id){
 	layer.confirm('确认要停用吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
-		
 		$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
 		$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
 		$(obj).remove();
