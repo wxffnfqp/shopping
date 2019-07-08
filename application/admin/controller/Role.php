@@ -137,8 +137,7 @@ class Role extends Common
         if (is_array($data['id'])){
             $rbac->delRole($data['id']);
         }else{
-            $id=$data['id'];
-            $rbac->delRole([$id]);
+            $rbac->delRole([$data['id']]);
         }
         $arr = ['status' => 'success', 'code' => '0', 'message' => '删除成功'];
         return json($arr);

@@ -73,32 +73,6 @@ class Permissionceta extends Common
             die;
         }
     }
-    //删除权限分组数据
-    function delete(){
-        $this->del_validate();
-        $id=Request::post('id');
-        Db::table('permission_category')->where('id',$id)->delete();
-        $arr=['status'=>'success','code'=>'0','message'=>'删除成功'];
-        $json=json_encode($arr);
-        echo $json;
-        die;
-    }
-    //多选删除
-    function datadel(){
-        //自己封装的一个验证，验证id，token的密串，防CSRF,$this指向方法名调用
-        $this->del_validate();
-        $data=Request::post('id');
-        $data=explode(',',$data);
-        //前台传过来的值有个空，将开头的单元移出
-        array_shift($data);
-        $rbac = new Rbac();
-        //rabc自带删除方法
-        $rbac->delPermissionCategory($data);
-        $arr=['status'=>'success','code'=>'0','message'=>'删除成功'];
-        $json=json_encode($arr);
-        echo $json;
-        die;
-    }
     //修改权限分组,即点即改是一个方法
     function update()
     {
@@ -107,26 +81,33 @@ class Permissionceta extends Common
         $data=Request::post();//接前台post传过来的数据，是数组形式的
         //查看数据库，查看是否分组名是否重复，如果有重复不能重名
         $res = Db::table('permission_category')->where('name', $data['name'])->find();
-        if (empty($res)) {
+        if (empty($res) || !empty($res) && $res['id']==$data['id']) {
             Db::table('permission_category')->where('id',$data['id'])->update(['name'=>$data['name'],'description'=>$data['description'],'status'=>1]);
             $arr = ['status' => 'success', 'code' => '0', 'message' => '修改成功'];
             $json = json_encode($arr);
             echo $json;
             die;
         } else {
-            if ($res['id']!=$data['id']){
-                $arr = ['status' => 'error', 'code' => '1', 'message' => '分组名不能重复'];
-                $json = json_encode($arr);
-                echo $json;
-                die;
-            }else{
-                //如果条件都符合，就执行修改语句
-                Db::table('permission_category')->where('id',$data['id'])->update(['name'=>$data['name'],'description'=>$data['description'],'status'=>1]);
-                $arr = ['status' => 'success', 'code' => '0', 'message' => '修改成功'];
-                $json = json_encode($arr);
-                echo $json;
-                die;
-            }
+            $arr = ['status' => 'error', 'code' => '1', 'message' => '分组名不能重复'];
+            $json = json_encode($arr);
+            echo $json;
+            die;
         }
+    }
+    //删除权限分组数据,如果接过来的id为数组就是多删，否则就是单删
+    function delete(){
+        $this->del_validate();
+        $rbac = new Rbac();
+        $data=Request::post();
+        if (is_array($data['id'])){
+            //rabc自带删除方法
+            $rbac->delPermissionCategory($data['id']);
+        }else{
+            $rbac->delPermissionCategory([$data['id']]);
+        }
+        $arr=['status'=>'success','code'=>'0','message'=>'删除成功'];
+        $json=json_encode($arr);
+        echo $json;
+        die;
     }
 }

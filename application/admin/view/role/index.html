@@ -201,17 +201,17 @@
 		var name = _this.parent().prev().children().html()
 		var permission_id = []
 		//定义关联数组，因为后台调用的是一个修改方法，所以传个数组过去，到后台判断如果是数组就执行这个修改方法，
-		permission_id = {'id':id,'name':new_name,'description':description,'__token__':__token__}
+		permission_id = {'id':id,'name':name,'description':new_description,'__token__':__token__}
 		traditional:true,//ajax传数组到后台需要用到
 		$.post("{:url('role/update')}",{permission_id:permission_id},function (res) {
 			console.log(res)
 			token()
 			if (res.status=='error'){
 				$.Huimodalalert(res.message,1000)
-				_this.parent().html("<span>"+old_name+"</span>")
+				_this.parent().html("<span>"+old_description+"</span>")
 			}
 			if (res.code==0){
-				_this.parent().html("<span>"+new_name+"</span>")
+				_this.parent().html("<span>"+new_description+"</span>")
 				$("#modal-update").modal("hide")
 			}
 		})
@@ -343,6 +343,7 @@ function role_del(obj,id){
 			token()
 			if (res.status=='error'){
 				$.Huimodalalert(res.message,1000)
+				layer.msg('!',{icon:1,time:1});
 			}
 			if (res.code==0){
 				$(obj).parents("tr").remove();
@@ -371,6 +372,7 @@ function datadel() {
 				token()
 				if (res.status=='error'){
 					$.Huimodalalert(res.message,1000)
+					layer.msg('!',{icon:1,time:1});
 				}
 				if (res.code==0){
 					$('#role_dels:checked').parents("tr").remove();

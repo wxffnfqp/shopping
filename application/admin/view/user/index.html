@@ -204,7 +204,7 @@
 		var _this = $(this)
 		var old_name = _this.children().html()
 		_this.html("<input type='text' style='border:none;width: 200px;height:30px; '  class='b_name' name='"+old_name+"' value='"+old_name+"'> ")
-		$('.b_name').focus()
+		$('.b_name').val("").focus().val(old_name);
 	})
 	$(document).on('blur' , '.b_name' , function () {
 		var __token__=$('#__token__').val()
@@ -233,7 +233,7 @@
 		var _this = $(this)
 		var old_phone = _this.children().html()
 		_this.html("<input type='text' style='border:none;width: 200px;height:30px; ' class='b_phone' phone='"+old_phone+"' maxlength='11' value='"+old_phone+"'> ")
-		$('.b_phone').focus()
+		$('.b_phone').val("").focus().val(old_phone);
 	})
 	$(document).on('blur' , '.b_phone' , function () {
 		var __token__=$('#__token__').val()
@@ -389,7 +389,7 @@ function admin_del(id){
 					show()
 				}
 				if (res.status=='error'){
-					layer.msg('!',{time:0});
+					layer.msg('!',{icon:1,time:1});
 					$.Huimodalalert(res.message,1000)
 				}
 			}
@@ -420,7 +420,7 @@ function admin_del(id){
 						show()
 					}
 					if (res.status == 'error') {
-						layer.msg();
+						layer.msg('!',{icon:1,time:1});
 						$.Huimodalalert(res.message, 1000)
 					}
 				}, 'json')

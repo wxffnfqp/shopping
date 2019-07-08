@@ -11,7 +11,7 @@ class Login extends Controller
     {
         return $this->fetch('login');
     }
-    function loginAction() {
+    function loginAction() {//登录跳转
         $rbac= new Rbac();
         $user=Request::post('user');
         $pwd=Request::post('pwd');
@@ -19,6 +19,7 @@ class Login extends Controller
         $where=['user_name'=>$user,'password'=>$pwd];
         $res=Db::table('user')->where($where)->find();
         $code=Request::post('code');
+        //tp自带的验证码验证方法
         if(!captcha_check($code)){
             $arr=['status'=>'error','code'=>'1','message'=>'验证码错误'];
         }elseif($res['user_name']!=$user || $res['password']!=$pwd){
@@ -29,7 +30,7 @@ class Login extends Controller
             //service方式因为要用到session一般要依赖于cookie。在用户登录后要获取用户权限操作
             //传入参数为登录用户的user_id
             //该方法会返回该用户所有的权限列表
-//            $rbac->cachePermission($res['id']);
+            $rbac->cachePermission($res['id']);
             $arr=['status'=>'seccuss','code'=>'0','message'=>'登录成功'];
             //登录时修改登录时间
             $time=strtotime(date('Y-m-d H:i:s'));
@@ -39,8 +40,8 @@ class Login extends Controller
         $json=json_encode($arr);
         echo $json;
     }
-    function out(){
-        Session::delete('admin');
+    function out(){//退出登录清除session,退出当前作用域
+        Session::clear();
         $this->redirect('Login/index');
     }
 

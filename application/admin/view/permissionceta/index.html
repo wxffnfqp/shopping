@@ -135,56 +135,11 @@
 <script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     //获取token密串,后台验证，防CSRF
-
-    //批量删除
-    function datadel(obj) {
-        var __token__ =  $('#__token__').val()
-        //判断checdbox是否有被选中的，选中返回true,没选返回true
-        var checked_id = $('#my_id:checked').is(':checked')
-        //如果有被选中的就提示是否要删除
-        if (checked_id == true) {
-            layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
-                var id = ''
-                //取选中的
-                var aid = $('#my_id:checked')
-                //取出来之后遍历出来，用逗号隔开，遍历出来的值赋值给id，传到后台
-                for (i = 0; i < aid.length; i++) {
-                    id = id + ',' + aid[i].value
-                }
-                $.ajax({
-                    url: "{:url('permissionceta/datadel')}",
-                    type: 'post',
-                    data: {
-                        id: id,
-                        __token__:__token__,
-                    },
-                    dataType: 'json',
-                    success: function (res) {
-                        console.log(res)
-                        if (res.code==9){
-                            $.Huimodalalert(res.message,1000)
-                            layer.msg('删除失败',{time: 1});
-                        }
-                        if (res.code == 0) {
-                            //删除成功隐藏选中的的要删除的行
-                            //checked选中的,parents他的父级tr
-                            $('#my_id:checked').parents("tr").remove();
-                            layer.msg('已删除!', {icon: 1, time: 1000});
-                        }
-                        token()
-                    }
-                })
-
-
-            });
-        }
-    }
     $(document).on('dblclick' , '.up_description' , function () {
         var _this = $(this)//获取描述的span标签
         var old_html = _this.html()//获取描述span标签里的值
-        _this.parent().html("<input type='text' style='align:left; border:none;font-size:16px;color:red;' name=" + old_html + " class='blur_description' value=" + old_html + " >")
-        $('.blur_description').focus()
-
+        _this.parent().html("<input type='text' style='border:none;width: 300px;height: 30px' name=" + old_html + " class='blur_description' value=" + old_html + " >")
+        $('.blur_description').val("").focus().val(old_html);
     })
     $(document).on('blur' , '.blur_description' , function () {
         var __token__ =  $('#__token__').val()
@@ -204,15 +159,11 @@
                 __token__:__token__,
             },
             function (res) {
-                console.log(res)
+                token()
                 if (res.code==0){
                     _this.parent().html("<span class='up_description'>"+ new_html +"</span>")
                 }
-                if (res.code==9){
-                    $.Huimodalalert(res.message,1000)
-                    _this.parent().html("<span class='up_description'>"+ old_html +"</span>")
-                }
-                if (res.code==1){
+                if (res.status=='error'){
                     $.Huimodalalert(res.message,1000)
                     _this.parent().html("<span class='up_description'>"+ old_html +"</span>")
                 }
@@ -225,8 +176,8 @@
         var _this = $(this);
         var old_val = _this.html(); // 获取要修改的值，span标签里的值
         //span标签父亲的值，也就是td的内容换成input框，里面的值就是原来的值old_val
-        _this.parent().html("<input type='text' style='border:none;font-size: 16px;color: red;' name=" + old_val + " class='focus' value=" + old_val + " />"); // 显示文本框
-        $(".focus").focus(); // 存在瑕疵，光标无法聚焦到文本最后的位置,加了这个光标就会在input框内
+        _this.parent().html("<input type='text' style='border:none;width: 200px;height: 30px' name=" + old_val + " class='focus' value=" + old_val + " />"); // 显示文本框
+        $(".focus").val("").focus().val(old_val); // 存在瑕疵，光标无法聚焦到文本最后的位置,加了这个光标就会在input框内
         // $(":text").select(); // 改进，弥补瑕疵，全选文字
     });
     //还原列表并修改数据，blur离开事件，
@@ -253,11 +204,8 @@
                 __token__:__token__,
             },
             function(res) {
-            if(res.code == 1){
-                $.Huimodalalert(res.message,1000)
-                _this.parent().html('<span class="click">' + old_val + '</span>');
-            }
-            if (res.code==9){
+                token()
+            if(res.status == 'error'){
                 $.Huimodalalert(res.message,1000)
                 _this.parent().html('<span class="click">' + old_val + '</span>');
             }
@@ -265,7 +213,6 @@
                 _this.parent().html('<span class="click">' + new_val + '</span>');
             }
         },'json')
-        token()
     })
     //添加分组的弹框
     function admin_permission_add(){
@@ -299,10 +246,7 @@
                 dataType:'json',
                 success:function (res) {
                     console.log(res)
-                    if (res.code==9){
-                        $.Huimodalalert(res.message,1000)
-                    }
-                    if (res.code==1){
+                    if (res.status=='error'){
                         $.Huimodalalert(res.message,1000)
                     }
                     if (res.code==0){
@@ -330,10 +274,7 @@
                 type:'post',
                 dataType:'json',
                 success:function (res) {
-                    if (res.code=='9'){
-                        $.Huimodalalert(res.message,1000)
-                    }
-                    if (res.code==1){
+                    if (res.status=='error'){
                         $.Huimodalalert(res.message,1000)
                     }
                     if (res.code==0){
@@ -360,8 +301,10 @@
                 type:'post',
                 dataType:'json',
                 success:function (res) {
-                    if (res.code=='9'){
+                    token()
+                    if (res.status=='error'){
                         $.Huimodalalert(res.message,1000)
+                        layer.msg('!',{icon:1,time:1});
                     }
                     if (res.code=='0') {
                         $(obj).parents("tr").remove();
@@ -369,10 +312,47 @@
                     }
                 }
             })
-            token()
-
         });
-
+    }
+    //批量删除
+    function datadel() {
+        var __token__ =  $('#__token__').val()
+        //判断checdbox是否有被选中的，选中返回true,没选返回true
+        var checked_id = $('#my_id:checked').is(':checked')
+        //如果有被选中的就提示是否要删除
+        if (checked_id == true) {
+            layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
+                var id = []
+                //取选中的
+                var str = $('#my_id:checked')
+                //取出来之后遍历出来，用逗号隔开，遍历出来的值赋值给id，传到后台
+                $.each(str,function (k,v) {
+                    id.push(v.value)
+                })
+                $.ajax({
+                    url: "{:url('permissionceta/delete')}",
+                    type: 'post',
+                    data: {
+                        id: id,
+                        __token__:__token__,
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        token()
+                        if (res.status=='error'){
+                            layer.msg('!',{icon:1,time:1});
+                            layer.msg('删除失败',{time: 1});
+                        }
+                        if (res.code == 0) {
+                            //删除成功隐藏选中的的要删除的行
+                            //checked选中的,parents他的父级tr
+                            $('#my_id:checked').parents("tr").remove();
+                            layer.msg('已删除!', {icon: 1, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
     }
     /*管理员-停用*/
     function admin_stop(obj,id){

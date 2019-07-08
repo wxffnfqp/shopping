@@ -180,7 +180,21 @@
 			success:function(res){
 				var data = res.data
 				for (var i=0; i < data.length; i++){
-					tr=tr+"<tr class='text-c'><td><input type='checkbox' id='my_id' value='"+data[i].id+"'></td><td>"+data[i].id+"</td><td p_id='id' class='up_names'><span>"+data[i].name+"</span></td><td class='up_path'><span>"+data[i].path+"</span></td><td d_id='"+data[i].id+"' class='up_description'><span>"+data[i].description+"</span></td><td pc_id='"+data[i].pc_id+"'><span>"+data[i].pc_name+"</span></td><td>"+timestampToTime(data[i].create_time)+"</td><td class='td-status'><span class='label radius'>已停用</span></td><td class='td-manage'><a style='text-decoration:none'  onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615;</i></a> <a title='编辑' href='javascript:;' onclick=my_permission_update("+data[i].id+",'"+data[i].name+"','"+data[i].description+"','"+data[i].path+"',"+data[i].pc_id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' href='javascript:;' onclick=permission_del(this,"+data[i].id+") class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"
+					tr+="<tr class='text-c'><td><input type='checkbox' id='my_id' value='"+data[i].id+"'></td>"
+					tr+="<td>"+data[i].id+"</td>";
+					tr+="<td p_id='id' class='up_names'><span>"+data[i].name+"</span></td>";
+					tr+="<td class='up_path'><span>"+data[i].path+"</span></td>";
+					tr+="<td d_id='"+data[i].id+"' class='up_description'><span>"+data[i].description+"</span></td>";
+					tr+="<td pc_id='"+data[i].pc_id+"'><span>"+data[i].pc_name+"</span></td>";
+					tr+="<td>"+timestampToTime(data[i].create_time)+"</td>";
+					tr+="<td class='td-status'><span class='label radius'>已停用</span></td>";
+					tr+="<td class='td-manage'>";
+					tr+="<a style='text-decoration:none'  onClick="+"admin_start(this,'10001')"+" href='javascript:;' title='启用'>";
+					tr+="<i class='Hui-iconfont'>&#xe615;</i></a>　";
+					tr+="<a title='编辑' href='javascript:;' onclick=my_permission_update("+data[i].id+",'"+data[i].name+"','"+data[i].description+"','"+data[i].path+"',"+data[i].pc_id+") class='ml-5' style='text-decoration:none'>";
+					tr+="<i class='Hui-iconfont'>&#xe6df;</i></a>　";
+					tr+="<a title='删除' href='javascript:;' onclick=permission_del(this,"+data[i].id+") class='ml-5' style='text-decoration:none'>";
+					tr+="<i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>";
 				}
 				$(".table tbody").html(tr);
 			}
@@ -191,8 +205,8 @@
 		$(document).on('dblclick' , '.up_description' , function () {
 			var _this = $(this)
 			var old_description = _this.children().html()//获取td里面span标签里面的值
-			_this.html("<input type='text' class='my_descriptions' description='"+old_description+"' style='color: red;border: none;' value='"+old_description+"'>")
-			$('.my_descriptions').focus()
+			_this.html("<input type='text' class='my_descriptions' description='"+old_description+"' style='border: none;width: 300px;height: 30px' value='"+old_description+"'>")
+			$('.my_descriptions').val("").focus().val(old_description);
 		})
 		$(document).on('blur' , '.my_descriptions' , function () {
 			var __token__ =  $('#__token__').val()
@@ -232,8 +246,8 @@
 			var _this = $(this)//获取双击取得的td标签
 			var old_name = _this.children().html()//获取td里面span标签里面的值
 			//在td标签里面添加一个Input框，里面的值就是获取的值old_name,name里面的值是为了给失去焦点而又没有改的时候，或者错误的时候返回原来的值
-			_this.html("<input type='text' style='border:none;font-size: 16px; color: red;' names=' "+old_name+" '  class='my_names' value='"+ old_name +"'>")
-			$('.my_names').focus()//修补小瑕呲，光标在input框里面
+			_this.html("<input type='text' style='border:none;width: 200px;height: 30px;' names=' "+old_name+" '  class='my_names' value='"+ old_name +"'>")
+			$('.my_names').val("").focus().val(old_name);//修补小瑕呲，光标在input框里面,把值置空然后让光标在最后面
 		})
 		//blur失去焦点事件，鼠标可移动，失去焦点即修改
 		$(document).on('blur' , '.my_names' ,function () {
@@ -273,8 +287,8 @@
 			var _this = $(this)//获取双击取得的td标签
 			var old_path = _this.children().html()//获取td里面span标签里面的值
 			//在td标签里面添加一个Input框，里面的值就是获取的值old_name,name里面的值是为了给失去焦点而又没有改的时候，或者错误的时候返回原来的值
-			_this.html("<input type='text' style='border:none;font-size: 16px; color: red;width: 300px;height: 30px' name=' "+old_path+" '  class='my_path' value='"+old_path+"'>")
-			$('.my_path').focus()//修补小瑕呲，光标在input框里面
+			_this.html("<input type='text' style='border:none;width: 300px;height: 30px' name=' "+old_path+" '  class='my_path' value='"+old_path+"'>")
+			$('.my_path').val("").focus().val(old_path);//修补小瑕呲，光标在input框里面
 		})
 		//blur失去焦点事件，鼠标可移动，失去焦点即修改
 		$(document).on('blur' , '.my_path' ,function () {
@@ -409,8 +423,7 @@
 				success:function (res) {
 					token()
 					if (res.status=='error'){
-						console.log(res.token)
-						layer.msg('!',{time:0});
+						layer.msg('!',{icon:1,time:1});
 						$.Huimodalalert(res.message,1000)
 					}
 					if (res.status=='success'){
@@ -432,13 +445,13 @@
 		//如果有被选中的就提示是否要删除
 		if (checked_id == true) {
 			//接到的吧它的id遍历出来，传到后台
-			var id = ''
-			for (i = 0; i < data_id.length; i++) {
-				id = id + "," + data_id[i].value
-			}
+			var id = []
+			$.each(data_id,function (k,v) {
+				id.push(v.value)
+			})
 			layer.confirm('权限删除须谨慎，确认要删除吗？' , function (index) {
 				$.ajax({
-					url:"{:url('permission/datadel')}",
+					url:"{:url('permission/delete')}",
 					data:{
 						id:id,
 						__token__:__token__
@@ -448,8 +461,7 @@
 					success: function (res) {
 						token()
 						if (res.status=='error'){
-							console.log(res.token)
-							layer.msg('!',{time:0});
+							layer.msg('!',{icon:1,time:1});
 							$.Huimodalalert(res.message,1000)
 						}
 						if (res.status=='success'){

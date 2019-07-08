@@ -1,11 +1,10 @@
 <?php
 namespace app\admin\controller;
 use app\admin\model\permission as permissionModel;
-use gmars\rbac\Rbac;
 use think\facade\Request;
+use gmars\rbac\Rbac;
 use Db;
 use Session;
-//use Request;
 class Permission extends Common
 {
     //封装的添加和修改的验证，调用验证器验证是否符合条件
@@ -88,29 +87,18 @@ class Permission extends Common
             die;
         }
     }
-    //选中删除，调用rbac删除方法
-    function datadel(){
-        $this->del_validate();
-        $id = Request::post('id');//前台接的值为字符串格式的
-        $data = explode(',',$id);//把值拆成数组用逗号隔开
-        array_shift($data);//去除数组首个单位，因为接过来的值第一个是空的
-        $rbac = new Rbac();
-        $rbac->delPermission($data);
-        $arr=['status'=>'success','code'=>'0','message'=>'添加成功'];
-        $json=json_encode($arr);
-        echo $json;
-        die;
-    }
-    //删除权限节点数据
+    //如果前台传过来的id是数组，就执行群删方法,否则就执行单删
     function delete(){
         $this->del_validate();
-        $id=Request::post('id');
+        $data=Request::post();
         $rbac = new Rbac();
-        $rbac->delPermission([$id]);
-        $arr=['status'=>'success','code'=>'0','message'=>'添加成功'];
-        $json=json_encode($arr);
-        echo $json;
-        die;
+        if (is_array($data['id'])){
+            $rbac->delPermission($data['id']);
+        }else{
+            $rbac->delPermission([$data['id']]);
+        }
+        $arr=['status'=>'success','code'=>'0','message'=>'删除成功'];
+        return json($arr);
     }
     //修改权限节点
     function update()
