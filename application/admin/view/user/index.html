@@ -180,7 +180,6 @@
 			success:function (res) {
 				var tr=''
 				var data=res.data
-				var newDate = new Date();//时间搓转换用得上
 				$.each(data,function (k,v) {
 					tr+="<tr class='text-c'><td>";
 					tr+="<input type='checkbox' id='user_del' value='"+v.id+"'></td>";
