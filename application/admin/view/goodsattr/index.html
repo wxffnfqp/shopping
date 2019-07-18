@@ -1,0 +1,123 @@
+<!--_meta 作为公共模版分离出去-->
+{include file="_meta" /}
+<!--/meta 作为公共模版分离出去-->
+<title>单品管理111</title>
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file="_header" /}
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+{include file="_menu" /}
+<!--/_menu 作为公共模版分离出去-->
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> <a href="{:url('index/index')}">首页</a>
+        <span class="c-gray en">&gt;</span>
+        产品管理
+        <span class="c-gray en">&gt;</span>
+        商品属性添加 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a> </nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+
+            <div style="height: 30px;"></div>
+            商品属性：
+            <span class="select-box" style="width: 200px;"  >
+            <select class="select" size="1" id="attrcate_id"  onchange="attribute()">
+
+            </select>
+
+            </span>
+            <div style="height: 30px;"></div>
+                <div class="row cl">
+                    <label class="form-label col-xs-1 col-sm-1">属性值：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <dl class="permission-list" id="add_attr">
+                        </dl>
+                        <button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+                    </div>
+                </div>
+        </article>
+    </div>
+
+</section>
+<!--_footer 作为公共模版分离出去-->
+{include file="_footer" /}
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript">
+    function attr_cate(){
+        $.ajax({
+            url:"{:url('attrcategory/show')}",
+            success:function (res) {
+                var option = "<option value='0'>属性分类</option>";
+                $.each(res.data,function (k,v) {
+                    option += "<option value='"+v.id+"'>"+v.name+"</option>";
+                })
+                $('#attrcate_id').html(option)
+            }
+        })
+    }
+    attr_cate()
+    function attribute() {
+        var attrcate_id = $('#attrcate_id').val()
+        console.log(attrcate_id)
+        $.ajax({
+            url:"{:url('goodsattr/show')}",
+            data:{
+                attrcate_id:attrcate_id
+            },
+            dataType:'json',
+            success:function (res) {
+                console.log(res)
+                dl=''
+                $.each(res.data,function (k,v) {
+                    dl += "<dt><label class=''><input  type='checkbox' value=''>"+k+"</label></dt>"
+                    dl += "<dd><dl class='cl permission-list2 ' >"
+                    $.each(v,function (k1,v1) {
+                        dl += "<label class=''><input id='my_checked' type='checkbox' value='"+v1.ad_id+"'>"+v1.ad_name+"</label>　　"
+                   console.log(v1.ad_id)
+                    })
+                    dl=dl+"</dd>"
+                })
+                $('#add_attr').html(dl)
+            }
+        })
+    }
+    $('#add').click(function () {
+        var __token__=$('#__token__').val()
+        var attr_id = ''
+        var attr_ids = $('#my_checked:checked')
+        for (var i=0; i < attr_ids.length; i++){
+            attr_id = attr_id+','+attr_ids[i].value
+        }
+        $.post(
+            "{:url('goodsattr/add')}",
+            {
+                permission_id:permission_id,
+                name:name,
+                description:description,
+                __token__:__token__
+            },
+            function (res) {
+                token()
+                if (res.status=='error'){
+                    $.Huimodalalert(res.message,1000)
+                }
+                if (res.code==0){
+                    layer.msg('添加成功',{icon:1,time:1000});
+                    $("#modal-demo").modal("hide")
+                    show()
+                }
+            },'json'
+        )
+    })
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -13,7 +13,7 @@ class user extends Validate
      * @var array
      */
     protected $rule = [
-        'name'  =>  'require|min:1|max:25|token',
+        'name'  =>  'require|max:25|token|/^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u',
         'phone' =>  'require|max:11|/^1[3-8]{1}[0-9]{9}$/',
         'pwd'  =>  'require|min:4|max:20',
     ];
@@ -27,6 +27,7 @@ class user extends Validate
     protected $message  =   [
         'name.require' => '名称不能为空',
         'name.max'     => '名称最多不能超过25个字符',
+        'name./^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u' => '名称必须字母、数字、或中文组成',
         'pwd.require' => '密码不能为空',
         'pwd.min' => '密码不能小于4位',
         'pwd.max' => '密码不能大于20位',

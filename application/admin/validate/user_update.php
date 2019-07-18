@@ -13,7 +13,7 @@ class user_update extends Validate
      * @var array
      */
     protected $rule = [
-        'name'  =>  'require|min:1|max:25|token',
+        'name'  =>  'require|max:25|token|/^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u',
     ];
 
     /**
@@ -25,5 +25,6 @@ class user_update extends Validate
     protected $message  =   [
         'name.require' => '名称不能为空',
         'name.max'     => '名称最多不能超过25个字符',
+        'name./^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u' => '名称必须字母、数字、或中文组成',
     ];
 }

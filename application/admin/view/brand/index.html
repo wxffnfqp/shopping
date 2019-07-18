@@ -1,0 +1,289 @@
+﻿<!--_meta 作为公共模版分离出去-->
+{include file="_meta" /}
+<!--/meta 作为公共模版分离出去-->
+<title>品牌管理</title>
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file="_header" /}
+<!--/_header 作为公共模版分离出去-->
+<!--_menu 作为公共模版分离出去-->
+{include file="_menu" /}
+<!--/_menu 作为公共模版分离出去-->
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 品牌管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+				<form class="Huiform" target="_self">
+					<input type="text" id="brand_name" placeholder="分类名称" value="" class="input-text" style="width:120px">
+					<input type="text" id="description" placeholder="具体描述" value="" class="input-text" style="width:300px">
+					<span class="btn-upload form-group">
+					<a href="javascript:void();" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 上传LOGO</a>
+					<input type="file" multiple name="file-2" id="logo"   class="input-file">　
+					</span><button type="button" class="btn btn-success" id="brand_add" name="" ><i class="Hui-iconfont">&#xe600;</i> 添加</button>
+				</form>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span> <span class="r">共有数据：<strong id="brand_count"></strong> 条</span> </div>
+			<div class="mt-10">
+				<input type="hidden" id="__token__" value="{$Request.token}" />
+				<table class="table table-border table-bordered table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox" name="" value=""></th>
+							<th width="70">ID</th>
+							<th width="200">LOGO</th>
+							<th width="120">品牌名称</th>
+							<th>具体描述</th>
+							<th width="100">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="modal-update" class="option_show modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius" style="width: 900px;">
+			<div class="modal-header">
+				<h3 class="modal-title">品牌修改</h3>
+				<span id="span_id" hidden></span>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<article class="cl pd-20">
+					<form  class="form form-horizontal">
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>品牌名称：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<input type="text" class="input-text" value="" placeholder="" id="update_name" >
+							</div>
+						</div>
+						<div class="row cl">
+							<label class="form-label col-xs-4 col-sm-3">品牌描述：</label>
+							<div class="formControls col-xs-8 col-sm-9">
+								<textarea id="update_description" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" ></textarea>
+							</div>
+						</div>
+					</form>
+				</article>
+			</div>
+			<div class="modal-footer">
+				<button id="update_action" class="btn btn-primary">修改</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-update2" class="option_show modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius" style="width: 900px;">
+			<div class="modal-header">
+				<h3 class="modal-title">LOGO修改</h3>
+				<input type="text" id="logo_id" value="" hidden>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<article class="cl pd-20">
+					<form  class="form form-horizontal">
+						<div class="text-c">
+							<form class="Huiform" method="post" action="" target="_self">
+								<span class="btn-upload form-group">
+									<img style="width: 160px;height: 30px;" id="my_update_logo" src="" alt="">
+									<input class="input-text upload-url" placeholder="上传LOGO" type="text" name="myfile"   readonly style="width:200px">
+									<a href="javascript:void();" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 浏览图片</a>
+									<input type="file" id="myphoto" multiple name="file-2" class="input-file">
+								</span>
+							</form>
+						</div>
+					</form>
+				</article>
+			</div>
+			<div class="modal-footer">
+				<button id="update_logo" class="btn btn-primary">修改</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+{include file="_footer" /}
+<!--/_footer /作为公共模版分离出去--> 
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+	function show(){
+		$.ajax({
+			type:'post',                             //ajax post传值
+			url: "{:url('brand/show')}",
+			dataType: 'json',
+			success:function (res) {
+				$('#brand_count').html(res.count)
+				var tr = ''
+				var data = res.data
+				for (var i=0; i < data.length; i++){
+					tr+="<tr class='text-c'><td><input type='checkbox' id='brand_dels' class='brand_id' value='"+data[i].id+"' ></td>"
+					tr+="<td>"+data[i].id+"</td>";
+					tr+="<td class=‘text-l’><img id='my_logo' style='height: 40px;width: 200px;'  src='/uploads/"+data[i].logo+"'></td>";
+					tr+="<td>"+data[i].name+"</td>";
+					tr+="<td class='text-l'>"+data[i].description+"</td>";
+					tr+="<td class='f-14 product-brand-manage'>";
+					tr+="<a style='text-decoration:none' onclick=brand_update("+data[i].id+",'"+data[i].name+"','"+data[i].description+"')   title='编辑'><i class='Hui-iconfont'>&#xe6df;</i></a> ";
+					tr+="<a style='text-decoration:none' onclick=brand_del(this,"+data[i].id+") class='ml-5'  title='删除'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+					tr+="</td></tr>";
+				}
+				$(".table tbody").html(tr);
+			}
+		})
+	}
+	show()
+	//添加品牌
+	$("#brand_add").click(function(){
+		var formData = new FormData();
+		formData.append("name", document.getElementById("brand_name").value);
+		formData.append("description", document.getElementById("description").value);
+		formData.append("__token__", document.getElementById("__token__").value);
+		formData.append("logo", document.getElementById("logo").files[0]);
+		$.ajax({
+			url: "{:url('brand/add')}",
+			type: "POST",
+			data: formData,
+			/**
+			 *必须false才会自动加上正确的Content-Type
+			 */
+			contentType: false,
+			/**
+			 * 必须false才会避开jQuery对 formdata 的默认处理
+			 * XMLHttpRequest会对 formdata 进行正确的处理
+			 */
+			processData: false,
+			dataType:'json',
+			success: function (res) {
+				token()
+				if (res.status=='error'){
+					$.Huimodalalert(res.message,1000)
+				}
+				if (res.code=='10001'){
+					show()
+					layer.msg('添加成功',{icon:1,time:1000});
+				}
+			},
+		});
+	});
+/*管理员-角色-删除*/
+function brand_del(obj,id){
+	layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		var __token__=$('#__token__').val()
+		$.post("{:url('brand/delete')}", {id:id,__token__:__token__}, function (res) {
+			token()
+			if (res.status=='error'){
+				$.Huimodalalert(res.message,1000)
+				layer.msg('!',{icon:1,time:1});
+			}
+			if (res.code==0){
+				$(obj).parents("tr").remove();
+				layer.msg('已删除!',{icon:1,time:1000});
+			}
+		},'json')
+	});
+}
+//批量删除
+function datadel() {
+	var __token__=$('#__token__').val()
+	var ids=$('#brand_dels:checked')
+	//判断checdbox是否有被选中的，选中返回true,没选返回true
+	var checked_id = $('#brand_dels:checked').is(':checked')
+	//如果有被选中的就提示是否要删除
+	if (checked_id == true) {
+		layer.confirm('角色删除须谨慎，确认要删除吗？', function (index) {
+			var id=[]
+			$.each(ids, function (k,v) {
+				//把值放到数组里面
+				id.push(v.value)
+			})
+			traditional:true,//ajax传数组到后台需要用到
+			$.post("{:url('brand/delete')}", {id:id,__token__:__token__}, function (res) {
+				token()
+				if (res.status=='error'){
+					$.Huimodalalert(res.message,1000)
+					layer.msg('!',{icon:1,time:1});
+				}
+				if (res.code==0){
+					$('#brand_dels:checked').parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+					show()
+				}
+			},'json')
+		});
+	}
+}
+	function brand_update(id,name,description){
+		//因为是弹框，点击要取它的默认值，取出来把它赋给标签
+		$('#span_id').html(id)
+		$('#update_name').val(name)
+		$('#update_description').val(description)
+		$("#modal-update").modal("show")
+	}
+	$('#update_action').click(function () {
+		var __token__=$('#__token__').val()
+		//因为是弹框，点击要取它的默认值，取出来把它赋给标签
+		var my_id=$('#span_id').html()
+		var name=$('#update_name').val()
+		var description=$('#update_description').val()
+		var id = []
+		id = {'id':my_id}
+		$.post( "{:url('brand/update')}", {id:id,name:name,description:description,__token__:__token__},function(res) {
+			token()
+			if (res.status=='error'){
+				$.Huimodalalert(res.message,1000)
+			}
+			if (res.code==0){
+				layer.msg('修改成功',{icon:1,time:1000});
+				$("#modal-update").modal("hide")
+				show()
+			}
+		},'json')
+	})
+$(document).on('click','#my_logo',function () {
+	var _this = $(this)
+	var id = _this.parent().prev().html()
+	var logo = _this.attr('src')
+	$('#logo_id').val(id)
+	$('#my_update_logo').attr('src',logo)
+	$("#modal-update2").modal("show")
+})
+	$('#update_logo').click(function () {
+		var formData = new FormData();
+		formData.append("logo", document.getElementById("myphoto").files[0]);
+		formData.append("id", document.getElementById("logo_id").value);
+		$.ajax({
+			url: "{:url('brand/update')}",
+			type: "POST",
+			data: formData,
+			contentType: false,
+			processData: false,
+			dataType:'json',
+			success: function (res) {
+				token()
+				if (res.status=='error'){
+					$.Huimodalalert(res.message,1000)
+				}
+				if (res.code=='10001'){
+					show()
+					layer.msg('修改成功',{icon:1,time:1000});
+					$('#modal-update2').modal('hide')
+				}
+			},
+		});
+	})
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

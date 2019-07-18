@@ -13,7 +13,7 @@ class Role extends Validate
      * @var array
      */
     protected $rule = [
-        'name'  =>  'require|max:25|token',
+        'name'  =>  'require|max:25|token|/^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u',
         'description' =>  'require|max:100',
         'permission_id' =>  'require',
     ];
@@ -27,6 +27,7 @@ class Role extends Validate
     protected $message  =   [
         'name.require' => '名称不能为空',
         'name.max'     => '名称最多不能超过25个字符',
+        'name./^[A-Za-z0-9_\x{4e00}-\x{9fa5}]+$/u' => '名称必须字母、数字、或中文组成',
         'description.max' => '描述不能超过100字',
         'description.require' => '描述不能为空',
         'permission_id.require' => '权限不能为空',

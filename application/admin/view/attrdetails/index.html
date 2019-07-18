@@ -1,0 +1,271 @@
+<!--/meta 作为公共模版分离出去-->
+{include file="_meta" /}
+<!--/meta 作为公共模版分离出去-->
+<title>商品属性管理</title>
+<meta name="keywords" content="H-ui.admin v3.0,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
+<meta name="description" content="H-ui.admin v3.0，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file="_header" /}
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+{include file="_menu" /}
+<!--/_menu 作为公共模版分离出去-->
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i>
+        <a href="{:url('index/index')}">首页</a>
+        <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span>
+        <a href="{:url('attrcategory/index')}">属性分类管理</a>
+        <span class="c-gray en">&gt;</span>属性管理  <span class="c-gray en">&gt;</span> 属性详情管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="text-c">
+                <form class="Huiform" method="post" action="" target="_self">
+                    <input type="text" class="input-text" style="width:250px" placeholder="权限名称" id="" name="">
+                    <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索属性</button>
+                </form>
+            </div>
+            <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="add_show()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加{$attr_name}</a></span> <span class="r">共有数据：<strong id="count"></strong> 条</span> </div>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="9">属性列表</th>
+                    <input type="hidden" id="__token__" value="{$Request.token}" />
+                </tr>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="40">ID</th>
+                    <th width="150"><span>{$attr_name}</span>名称</th>
+                    <th width="100">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </article>
+    </div>
+</section>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content radius" style="width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">添加<span>{$attr_name}</span></h3>
+                <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            </div>
+            <div class="modal-body">
+                <article class="cl pd-20">
+                    <form  class="form form-horizontal">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">{$attr_name}名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="请输入{$attr_name}属性的名称" id="name" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">{$attr_name}名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="请输入{$attr_name}属性的名称" id="name2" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">{$attr_name}名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="请输入{$attr_name}属性的名称" id="name3" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">{$attr_name}名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="请输入{$attr_name}属性的名称" id="name4" >
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-3">{$attr_name}名称：</label>
+                            <div class="formControls col-xs-8 col-sm-9">
+                                <input type="text" class="input-text" value="" placeholder="请输入{$attr_name}属性的名称" id="name5" >
+                            </div>
+                        </div>
+                    </form>
+                </article>
+            </div>
+            <div class="modal-footer">
+                <button id="add"  class="btn btn-primary">添加</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+{include file="_footer" /}
+
+<!--/_footer /作为公共模版分离出去-->
+<input type='text'>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__ADMIN__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+
+    show()
+    //添加分组的弹框
+    function add_show(){
+        $("#modal-demo").modal("show")
+    }
+    function show (){
+        var tr=''
+        var id = '{$attr_id}'
+        $.ajax({
+            dataType:'json',
+            url:"{:url('attrdetails/show')}",
+            data:{
+                id:id
+            },
+            success:function(res){
+                var data = res.data
+                $('#count').html(res.count)
+                $.each(data,function (k,v) {
+                    tr+="<tr class='text-c'><td><input type='checkbox' id='my_id' value='"+v.id+"'></td>"
+                    tr+="<td>"+v.id+"</td>";
+                    tr+="<td>"+v.name+"</td>";
+                    tr+="<td class='td-manage'>";
+                    tr+="<a title='删除' href='javascript:;' onclick=attrdetails_del(this,"+v.id+") class='ml-5' style='text-decoration:none'>";
+                    tr+="<i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>";
+                })
+                $(".table tbody").html(tr);
+            }
+        });
+    }
+        //添加分组，调用后台方法
+        $('#add').click(function () {
+            var __token__ =  $('#__token__').val()
+            var id = '{$attr_id}';
+            var name =1
+            var name1=$('#name').val()
+            var name2=$('#name2').val()
+            var name3=$('#name3').val()
+            var name4=$('#name4').val()
+            var name5=$('#name5').val()
+            var names = []
+            if (name1!=''){
+                names.push(name1)
+            }
+            if (name2!=''){
+                names.push(name2)
+            }
+            if (name3!=''){
+                names.push(name3)
+            }
+            if (name4!=''){
+                names.push(name4)
+            }
+            if (name5!=''){
+                names.push(name5)
+            }
+            if (names.length==0){
+                $.Huimodalalert('至少添加一条属性',1000)
+                return false
+            }
+            traditional:true,//ajax传数组到后台需要用到
+            $.ajax({
+                url:"{:url('attrdetails/add')}",
+                data: {
+                    id:id,
+                    name:name,
+                    names: names,
+                    __token__: __token__
+                },
+                type:'post',
+                dataType:'json',
+                success:function (res) {
+                    token()
+                    if (res.status=='error'){
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.code=='10001'){
+                        layer.msg('添加成功!',{icon:1,time:1000});
+                        $("#modal-demo").modal("hide")
+                        $('#name').val('')
+                        $('#name2').val('')
+                        $('#name3').val('')
+                        $('#name4').val('')
+                        $('#name5').val('')
+                        show()
+                    }
+                }
+            })
+        });
+
+    //删除分组
+    function attrdetails_del(obj,id){
+        var __token__ =  $('#__token__').val()
+        layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
+            $.ajax({
+                url:"{:url('attrdetails/delete')}",
+                data:{
+                    id:id,
+                    __token__:__token__
+                },
+                type:'post',
+                dataType:'json',
+                success:function (res) {
+                    token()
+                    if (res.status=='error'){
+                        layer.msg('!',{icon:1,time:1});
+                        $.Huimodalalert(res.message,1000)
+                    }
+                    if (res.status=='success'){
+                        layer.msg('已删除!',{icon:1,time:1000});
+                        $(obj).parents("tr").remove();
+                        show()
+                    }
+                }
+            })
+
+        });
+    }
+    function datadel() {
+        var __token__ =  $('#__token__').val()
+        //获取checdbox被选中的id
+        var data_id = $('#my_id:checked')
+        //判断checdbox是否有被选中的，选中返回true,没选返回true
+        var checked_id = $('#my_id:checked').is(':checked')
+        //如果有被选中的就提示是否要删除
+        if (checked_id == true) {
+            //接到的吧它的id遍历出来，传到后台
+            var id = []
+            $.each(data_id,function (k,v) {
+                id.push(v.value)
+            })
+            layer.confirm('权限删除须谨慎，确认要删除吗？' , function (index) {
+                $.ajax({
+                    url:"{:url('attrdetails/delete')}",
+                    data:{
+                        id:id,
+                        __token__:__token__
+                    },
+                    type:'post',
+                    dataType:'json',
+                    success: function (res) {
+                        token()
+                        if (res.status=='error'){
+                            layer.msg('!',{icon:1,time:1});
+                            $.Huimodalalert(res.message,1000)
+                        }
+                        if (res.status=='success'){
+                            layer.msg('已删除!',{icon:1,time:1000});
+                            show()
+                        }
+                    }
+                })
+            });
+        }
+    }
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
