@@ -8,7 +8,7 @@ class Index extends Common
     {
         $a=Session::get('admin');
         $this->assign('a',$a);
-        return $this->fetch('index');
+        return $this->fetch();
     }
     public function onControl()
     {

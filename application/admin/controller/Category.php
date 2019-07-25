@@ -3,7 +3,7 @@ namespace app\admin\controller;
 use app\admin\model\Brand as BrandModel;
 use Db;
 use think\facade\Request;
-
+use Cache;
 //use Request;
 class Category extends Common
 {
@@ -143,8 +143,13 @@ class Category extends Common
         return $list;
     }
     function tree(){
-        $res=db('goods_category')->select();
-        $this->getTree($res);
+        $arr = Cache::get('name');
+        if(!$arr){
+            Cache::set('name',$arr,3600);
+            $res=db('goods_category')->select();
+
+        }
+    $this->getTree($res);
     }
 
 }

@@ -21,7 +21,7 @@ class Goodsimg extends Common
     function index(){
         $goods_id = Request::get('id');
         $this->assign('goods_id',$goods_id);
-        return $this->fetch('goodsimg/index');
+        return $this->fetch('goodsimg/Blog');
     }
     function show(){
         $goods_id = Request::post('goods_id');

@@ -76,6 +76,7 @@ class Goods extends Common
                     Db::query("delete from goods_img where goods_id = '$img_id'");
                 }
                 Db::query("delete from goods where id = '$v'");
+                db('goods_attr')->where('goods_id',$v)->delete();
             }
         }else{
             $res = db('goods')->where('id',$id)->find();
@@ -93,6 +94,7 @@ class Goods extends Common
                 Db::query("delete from goods_img where goods_id = '$img_id'");
             }
             Db::query("delete from goods where id = '$id'");
+            db('goods_attr')->where('goods_id',$id)->delete();
         }
         $arr = ['status' => 'success', 'code' => '10001', 'message' => '删除成功'];
         return json($arr);

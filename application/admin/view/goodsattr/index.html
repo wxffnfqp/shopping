@@ -19,22 +19,22 @@
         商品属性添加 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a> </nav>
     <div class="Hui-article">
         <article class="cl pd-20">
-
+            <input type="hidden" id="__token__" value="{$Request.token}" />
             <div style="height: 30px;"></div>
             商品属性：
             <span class="select-box" style="width: 200px;"  >
             <select class="select" size="1" id="attrcate_id"  onchange="attribute()">
 
             </select>
-
             </span>
+            <span id="my_attrcate_id"></span>
             <div style="height: 30px;"></div>
                 <div class="row cl">
                     <label class="form-label col-xs-1 col-sm-1">属性值：</label>
                     <div class="formControls col-xs-8 col-sm-9">
                         <dl class="permission-list" id="add_attr">
                         </dl>
-                        <button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+                        <button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 保存</button>
                     </div>
                 </div>
         </article>
@@ -51,57 +51,106 @@
 <script type="text/javascript" src="__ADMIN__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript" src="__ADMIN__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
 <script type="text/javascript">
+    //获取属性分类的列表，展示出来
     function attr_cate(){
+        var goods_id = '{$goods_id}';
         $.ajax({
-            url:"{:url('attrcategory/show')}",
+            url:"{:url('goodsattr/attrshow')}",
+            data:{
+                goods_id:goods_id
+            },
+            type:'post',
             success:function (res) {
+                //查询商品表，根据商品取它的属性类型取到的id
+                var attrcate_id = res.attrcate_id
+                //因为下拉框获取不到它的默认值，所以先把值赋给一个span标签，在下面attribute()方法取，不知道什么原因获取不到
+                $('#my_attrcate_id').html(attrcate_id)
                 var option = "<option value='0'>属性分类</option>";
                 $.each(res.data,function (k,v) {
-                    option += "<option value='"+v.id+"'>"+v.name+"</option>";
+                    //后台的返回值，如果这个商品还没赋予属性，它是没有属性类型的，就没有这个数据，所以是undefined
+                    if (attrcate_id != undefined){
+                        //如果属性类型的id等于查询出来对应的属性id，就给他默认选中，因为赋值部上去，所以采用的这种方法
+                        if (v.id==attrcate_id) {
+                             option += "<option value='"+v.id+"' selected>"+v.name+"</option>";
+                            // //有默认选中的就执行下面方法，执行onchang事件，展示复选框
+                            // var attrcate_id = $('#attrcate_id').val()
+                            // console.log(attrcate_id)
+                            console.log(121)
+                        }else{
+                            option += "<option value='"+v.id+"'>"+v.name+"</option>";
+                        }
+                    }else{
+                        option += "<option value='"+v.id+"'>"+v.name+"</option>";
+                    }
                 })
                 $('#attrcate_id').html(option)
+                attribute()
             }
         })
     }
     attr_cate()
     function attribute() {
+        //获取onchang事件选中的属性类型的id
         var attrcate_id = $('#attrcate_id').val()
         console.log(attrcate_id)
+        //return false
+        //如果获取不到就把上面方法赋予span标签的属性类型的id重新赋值给它，都怪取不到它的默认值
+        //它的值是查商品赋予属性的时候选择的属性类型，根据这个属性类型查询都有哪些属性值可以选择
+        // if (attrcate_id == null){
+        //     attrcate_id = $('#my_attrcate_id').html()
+        // }
+        var goods_id = '{$goods_id}';//获取后台传过来的商品的id,根据这个id去查这个商品都给它赋予了哪些属性值
         $.ajax({
             url:"{:url('goodsattr/show')}",
             data:{
+                goods_id:goods_id,
                 attrcate_id:attrcate_id
             },
-            dataType:'json',
+            type:'post',
             success:function (res) {
-                console.log(res)
+                console.log(res.goods_attr)
+
                 dl=''
                 $.each(res.data,function (k,v) {
-                    dl += "<dt><label class=''><input  type='checkbox' value=''>"+k+"</label></dt>"
-                    dl += "<dd><dl class='cl permission-list2 ' >"
+                    dl += "<dt><label class=''>"+k+"</label></dt><dd><dl class='cl permission-list2 ' >"
                     $.each(v,function (k1,v1) {
-                        dl += "<label class=''><input id='my_checked' type='checkbox' value='"+v1.ad_id+"'>"+v1.ad_name+"</label>　　"
-                   console.log(v1.ad_id)
+                        dl += "<label class=''><input class='mychecked_id"+v1.ad_id+"' id='my_checked' attr_id ='"+v[0].id+"'  type='checkbox' value='"+v1.ad_id+"'>"+v1.ad_name+"</label>　　"
                     })
                     dl=dl+"</dd>"
                 })
                 $('#add_attr').html(dl)
+                $(res.goods_attr).each(function (k2,v2) {
+                    console.log(v2.attr_details_id)
+                    $('.mychecked_id'+v2.attr_details_id).prop('checked',true)
+                })
             }
         })
     }
     $('#add').click(function () {
-        var __token__=$('#__token__').val()
-        var attr_id = ''
-        var attr_ids = $('#my_checked:checked')
-        for (var i=0; i < attr_ids.length; i++){
-            attr_id = attr_id+','+attr_ids[i].value
+        var attrcate_id = $('#attrcate_id').val()
+        var checked = $(" input[type='checkbox']").is('#my_checked:checked')
+        if (checked == false){
+            $.Huimodalalert('请选择要添加的属性值',1000)
+            return false
         }
+        var __token__=$('#__token__').val()
+        var attr_details_id = []
+        var attr_id = []
+        var goods_id = '{$goods_id}';
+        $('#my_checked:checked').each(function(){
+            var _this = $(this)
+            console.log(_this)
+            attr_id.push($(this).attr('attr_id'))
+            attr_details_id.push($(this).val())
+        });
+        traditional:true,//ajax传数组到后台需要用到
         $.post(
             "{:url('goodsattr/add')}",
             {
-                permission_id:permission_id,
-                name:name,
-                description:description,
+                attrcate_id:attrcate_id,
+                goods_id:goods_id,
+                attr_id:attr_id,
+                attr_details_id:attr_details_id,
                 __token__:__token__
             },
             function (res) {
