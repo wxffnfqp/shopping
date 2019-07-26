@@ -143,11 +143,11 @@ class Category extends Common
         return $list;
     }
     function tree(){
-        $arr = Cache::get('name');
-        if(!$arr){
-            Cache::set('name',$arr,3600);
-            $res=db('goods_category')->select();
+        $res = Cache::get('name');
+        if(!$res){
 
+            $res=db('goods_category')->select();
+            Cache::set('name',$res,3600);
         }
     $this->getTree($res);
     }
