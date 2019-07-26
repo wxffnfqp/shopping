@@ -23,10 +23,15 @@ class Category extends Common
         return $this->fetch();
     }
     function show(){
-        $res=db('goods_category')->select();
-        $arr=['code'=>'0','status'=>'success','data'=>$res];
-        $json=json_encode($arr);
-        echo $json;
+        $res = Cache::get('name');
+        var_dump($res);die;
+//        if (!$res){
+//            $res=db('goods_category')->select();
+//            Cache::set('name',$res,3600);
+//        }
+//        $arr=['code'=>'0','status'=>'success','data'=>$res];
+//        $json=json_encode($arr);
+//        echo $json;
     }
     function add(){
         $this->add_validate();
