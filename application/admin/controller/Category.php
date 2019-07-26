@@ -23,7 +23,11 @@ class Category extends Common
         return $this->fetch();
     }
     function show(){
-        $res=db('goods_category')->select();
+        $res = Cache::get('name');
+        if(!$res){
+            $res=db('goods_category')->select();
+            Cache::set('name',$res,3600);
+        }
         $arr=['code'=>'0','status'=>'success','data'=>$res];
         $json=json_encode($arr);
         echo $json;
@@ -145,7 +149,6 @@ class Category extends Common
     function tree(){
         $res = Cache::get('name');
         if(!$res){
-
             $res=db('goods_category')->select();
             Cache::set('name',$res,3600);
         }

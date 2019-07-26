@@ -15,11 +15,11 @@
 
 return [
     // 缓存类型为File
-    'type'  =>  'Memcached',
+    'type'  =>  'redis',
     // 全局缓存有效期（0为永久有效）
     'expire'=>  0,
     // 缓存前缀
-    'prefix'=>  'think',
+    'prefix'=>  '',
     // 缓存目录
-    'path'  =>  '../runtime/cache/',
+    'path'  =>  '',
 ];
