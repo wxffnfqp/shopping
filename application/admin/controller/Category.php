@@ -30,7 +30,7 @@ class Category extends Common
         if (!$res){
 >>>>>>> Stashed changes
             $res=db('goods_category')->select();
-            Cache::set('name',$res,3600);
+            Cache::set('name',$res,36000);
         }
         $arr=['code'=>'0','status'=>'success','data'=>$res];
         $json=json_encode($arr);
