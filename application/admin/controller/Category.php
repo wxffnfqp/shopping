@@ -24,7 +24,11 @@ class Category extends Common
     }
     function show(){
         $res = Cache::get('name');
+<<<<<<< Updated upstream
         if(!$res){
+=======
+        if (!$res){
+>>>>>>> Stashed changes
             $res=db('goods_category')->select();
             Cache::set('name',$res,3600);
         }
